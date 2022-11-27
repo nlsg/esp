@@ -1,0 +1,375 @@
+% Created 2022-05-28 Sat 20:56
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\author{John Doe}
+\date{\today}
+\title{esp}
+\hypersetup{
+ pdfauthor={John Doe},
+ pdftitle={esp},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 27.2 (Org mode 9.6)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+[NAME] is a web based dashboard running on a esp32,
+with it, you can control all I/O peripherals plus read some
+metadata from the esp
+\section{{\bfseries\sffamily TODO} separate project agnositc stuff}
+\label{sec:org0417e50}
+\section{{\bfseries\sffamily TODO} fix user wheel group problem}
+\label{sec:orgcc8e3c0}
+\section{{\bfseries\sffamily TODO} ideas}
+\label{sec:org1cc9a29}
+\subsection{try to let gopro (cam) interface with esp}
+\label{sec:orgf76b5bd}
+\section{file-gen}
+\label{sec:org601a6e9}
+\begin{verbatim}
+from os import popen
+"""this script outputs an emacs-org table (simple ascii table with '-' and '|'),
+    which is programmatically aggregated.
+    Since this is meant to be used in an org-file,
+    there is a return statement in the global scope"""
+
+src = "./src/"              # src directory from where files are grabbed
+url = "192.168.43.31:/"     # ws domain where files are transferred [col 'esp']
+files = popen(f"ls {src}").read().split("\n")[:-1]
+
+webrepl_cli_bin = "/home/$USER/py/esp/webrepl/webrepl_cli.py" # [col 'esp']
+
+pop = lambda c: popen(c).read()[:-1]  # because it sucks to always read, especially with the last '\n'
+tab = lambda l: "|" + "|".join(l) + "|"   # outputs the table rows -> |x|y|z|
+emacs_link = lambda t,l,n: f"[[{t}:{l}][{n}]]"
+f_link = lambda l,n: emacs_link("file", l, n)
+s_link = lambda l,n: emacs_link("shell", l.split("&")[0] + " &", n)
+
+rows = (
+    {"head": "files",
+     "body": lambda f: f_link(src + f, f),
+     "tail": f"[[file:{src}][{src}]]"},
+    {"head": "esp",
+     "body": lambda f: s_link(f"{webrepl_cli_bin} {src}{f} {url}{f}", "->"),
+     "tail": ""},
+    {"head": "du",
+     "body": lambda f: pop(f"du -h {src}{f}").split()[0],
+     "tail": pop(f"du -S -h {src}").split()[0]},
+    {"head": "wc",
+     "body": lambda f: ", ".join(pop(f"cat {src}{f} |  wc ").split()),
+     "tail": ", ".join(pop(f"cat {src}* |  wc ").split())})
+
+def table_as_string():
+    return "\n".join(
+        (tab(c["head"] for c in rows),
+        "|-",
+        "\n".join(tab([c["body"](f) for c in rows]) for f in files),
+        tab(c["tail"] for c in rows)))
+
+if __name__ == "__main__":
+    return table_as_string()  # for emacs-org src_blocks
+    # print(table_as_string() # to not get en error otherwise
+\end{verbatim}
+\begin{verbatim}
+import uasyncio; from api import coro
+\end{verbatim}
+
+\section{hardware}
+\label{sec:orgd05751d}
+\subsection{esp32}
+\label{sec:orgf959c51}
+\subsubsection{pinout}
+\label{sec:orgb37466e}
+\href{./assets/pinout-0.png}{left-side}
+\href{./assets/pinout-1.png}{right-side}
+\href{./assets/pinout-disc.png}{discription}
+\begin{enumerate}
+\item legacy pinouts
+\label{sec:orge543765}
+\href{./assets/esp32-pinout.png}{pinout}
+\href{./assets/esp32-pinout1.png}{pinout\_}
+\end{enumerate}
+\subsubsection{block-diagram}
+\label{sec:orgd91cbb9}
+\href{./assets/esp32-block-diagram.png}{block-diagram}
+\subsubsection{hacks}
+\label{sec:org0af544a}
+\href{https://microcontrollerslab.com/esp32-esp8266-adc-micropython-measure-analog-readings/}{make adc resolve 12bit}
+\texttt{adc.atten(ADC.ATTN\_11DB)       \#3.3V full range of voltage}
+\section{API references}
+\label{sec:orge563328}
+\subsection{\href{https://docs.micropython.org/en/latest/esp32/quickref.html}{micropython implementation of espressif}}
+\label{sec:org0ced470}
+\href{https://docs.micropython.org/en/latest/library/uasyncio.html}{uasyncio}
+\subsection{\href{https://microdot.readthedocs.io/en/latest/api.html}{Microdot}}
+\label{sec:org9c513af}
+\href{https://bhave.sh/micropython-microdot/}{Tut of Microdot}
+\section{api\textsubscript{test.py}}
+\label{sec:org91da3da}
+\begin{verbatim}
+#!/usr/bin/env python3
+
+"""this script for the [NAME] api"""
+
+import requests
+from time import perf_counter
+
+ROOT_URL = "http://192.168.43.31:5000/"
+
+get_gen = lambda calls: (requests.get(ROOT_URL + call["route"], params=call["payload"]).json()
+                         for call in calls)
+
+def benchmark(gen, count):
+    t1 = perf_counter()
+    return {"results": [[requests.get(ROOT_URL + call["route"], params=call["payload"])
+                                .json()
+                        for call in api_calls] for i in range(count)],
+            "time": (t := perf_counter() - t1),
+            "count": count,
+            "average_ms": t / count,
+            "request/s": 1 / ( t / count )}
+
+def pop_keys(keys, *dicts):
+    """removes all keys in dicts and returns a list of the resulting dicts"""
+    res_dict = []
+    for b in dicts:
+        [b.pop(k) for k in keys]
+        res_dict.append(b)
+    return res_dict
+
+api_calls = ({"route": "api/gpio/set",
+             "payload": {"pin":26}}, )
+
+# gpio_bench = pop_keys((), benchmark(get_gen(api_calls), 1))
+gpio_bench = benchmark(get_gen(api_calls), 1)
+
+for report in gpio_bench:
+    for k in report:
+        print(k, " -> ", report[k])
+
+\end{verbatim}
+
+\section{curl (test API)}
+\label{sec:org4775819}
+\hyperref[sec:org9007b89]{api spec}
+\subsubsection{Root / Doc}
+\label{sec:orgf9f8c06}
+\href{curl 192.168.43.31:5000/ \&}{/  <-}
+\href{curl -G -d "pin=2" 192.168.43.31:5000/api/gpio \&}{/gpio <-}
+\subsubsection{Digital}
+\label{sec:orgf0ad521}
+-> \href{curl -G -d "pin=2" 192.168.43.31:5000/api/gpio/get \&}{/gpio/get 2}
+-> \url{curl -G -d "pin=33" 192.168.43.31:5000/api/gpio/get \&}
+-> \href{curl -G -d "pin=two" 192.168.43.31:5000/api/gpio/get \&}{/gpio/get type error str instead of int}
+-> \url{curl -G -d "pin=26" 192.168.43.31:5000/api/gpio/set \&}
+-> \href{curl -G -d "pin=2" 192.168.43.31:5000/api/gpio/set \&}{/gpio/set 2 toggle}
+-> \href{curl -G -d "pin=2" -d "value=0" 192.168.43.31:5000/api/gpio/set \&}{/gpio/set 2 OFF}
+-> \href{curl -G -d "pin=2" -d "value=1" 192.168.43.31:5000/api/gpio/set \&}{/gpio/set 2 ON}
+-> \href{curl -G -d "pin=two" -d "value=1" 192.168.43.31:5000/api/gpio/set \&}{/gpio/set 2 type error str instead of int}
+\subsubsection{Analog}
+\label{sec:orgb3ec042}
+\href{curl -G -d "pin=33"  192.168.43.31:5000/api/gpio/read \&}{/gpio/read 33 <-}
+\href{curl -G -d "pin=two" 192.168.43.31:5000/api/gpio/read \&}{/gpio/read 33 type error str instead of int <-}
+\subsubsection{ds18b20}
+\label{sec:orgb040303}
+\href{curl -G -d "pin=4"  192.168.43.31:5000/api/gpio/ds18 \&}{/gpio/ds18 4 <-}
+
+\section{tools}
+\label{sec:org54f83e3}
+\subsection{{\bfseries\sffamily TODO} document img flashin process}
+\label{sec:orgb2f6450}
+\subsection{{\bfseries\sffamily TODO} cli\textsubscript{socket.py}}
+\label{sec:org86a04fc}
+\begin{verbatim}
+import websockets
+#!/usr/bin/env python
+
+import asyncio
+import websockets
+
+uri = "ws://192.168.43.31:8266"
+
+async def hello():
+    msg = ""
+    async with websockets.connect(uri) as websocket:
+        await websocket.send(msg)
+        msg = input(">>>" + await websocket.recv())
+
+asyncio.run(hello())
+\end{verbatim}
+\subsection{doc extractor (docer.py)}
+\label{sec:orgfa380a2}
+\begin{verbatim}
+#!/usr/bin/env python
+"""this python script extracts signature and docstring, of given functions.
+Recogniseing decoratores is yet not implemented.
+The data is then outputed to a json or org file,
+later is especially usefull, if this script is
+implemented in a org file. In that case, make
+sure that the src_block has the ':results raw' option added
+"""
+
+from os import popen
+from json import dump
+from datetime import datetime as dt
+
+SRC_PATH = "./src/"
+OUT_FILE = "./docs.json"
+
+files = [SRC_PATH + f for f in popen("ls ./src").read().split("\n") if ".py" in f]
+
+def extract_docs(files):
+    """outputs a dict with given filenames as keys,
+    whose values are dicts with function signature
+    and docstring key value pairs"""
+    docs = {}
+    for file in files:
+        functions = {}
+        for f in "".join(open(file, "r").readlines()).split("def "):
+            try:
+                doc = f.split('"""')[1]
+            except IndexError:
+                doc = "N/A"
+            functions.update({f.split("\n")[0]: doc})
+        docs.update({file: functions})
+    return docs
+
+def dict_to_org(d, indent=1):
+    """recursivly transforms a dict to an org-file.
+    The heading level is controled by the indent parameter
+    e.g.
+    >>> dict_to_org({"foo":"bar","bar"{"oof":"baz"}}, indent=2)"""
+    # ** foo
+    #    bar
+    # ** bar
+    # *** off
+    #     baz
+    return "\n".join([
+        "\n".join((
+            "*"*(indent) + " " + str(k),
+            dict_to_org(d[k], indent+1)
+            if isinstance(d[k], dict)
+            else str(d[k])))
+        for k in d])
+
+return "** -> docstrings (" \
+        + dt.now().strftime("%Y-%m-%d - %H:%M:%S") \
+        + ")\n" \
+        + dict_to_org(extract_docs(files), indent=3)
+
+# dump(docs, open(OUT_FILE, "w"), indent=2)
+\end{verbatim}
+\subsection{rshell (filesystem)}
+\label{sec:org4044702}
+rshell provides a shell which mounts the
+filesystem of the microcontroller (eps32)
+under the path /pyboard
+\texttt{rshell -p /dev/ttyUSB0 -b 115200}
+
+rshell also supports scripts (-f option)
+edit and tangel this rshell script block,
+\begin{verbatim}
+cp /home/nls/py/esp/src/boot.py /pyboard
+\end{verbatim}
+and execute it
+\url{sudo rshell -p /dev/ttyUSB0 -b 115200 -f \~/py/esp/dist.rshell \&} <-
+\subsection{webrepl\textsubscript{cli} (hotswap code)}
+\label{sec:orgabadcfb}
+transfer a file with webrepl (don't forget to save the file beforhand)
+-> \href{ /home/\$USER/py/esp/webrepl/webrepl\_cli.py -p "" \~/py/esp/src/gpio.py 192.168.43.31:/gpio.py \&}{gpio}
+-> \href{ /home/\$USER/py/esp/webrepl/webrepl\_cli.py -p "" \~/py/esp/src/main.py 192.168.43.31:/main.py \&}{main}
+
+\subsection{screen (connect to console/repl)}
+\label{sec:org2247898}
+C-c to abort the programm and access
+\texttt{screen /dev/ttyUSB0 115200}
+
+\subsection{\href{file:///home/nls/py/esp/webrepl/webrepl.html}{webrepl.html}}
+\label{sec:org37adaf0}
+
+\section{specification}
+\label{sec:orgbfb2e7b}
+\subsection{{\bfseries\sffamily TODO} ULP API}
+\label{sec:org785fdae}
+\subsection{I/Os}
+\label{sec:orge2a5d2e}
+\begin{center}
+\begin{tabular}{llll}
+type & location & porpuse & pin\\
+\hline
+INPUTS &  &  & \\
+tcp/ip ui & portable &  & \\
+dht22 & lung &  & \\
+dht22 & bloom &  & \\
+dht22 &  &  & \\
+humid & soil / bloom &  & \\
+co2 & bloom &  & \\
+pt100 & outdoor &  & \\
+\hline
+OUTPUTS &  &  & \\
+light & bloom &  & \\
+light & veg &  & \\
+circ & bloom &  & \\
+circ & vig &  & \\
+exhaust &  &  & \\
+mister & lung &  & \\
+dosage-punp & feed &  & \\
+\end{tabular}
+\end{center}
+
+\subsection{Control-Loops}
+\label{sec:org176c75d}
+\begin{center}
+\begin{tabular}{ll}
+actor & sensor\\
+light & time\\
+mister & humid, gro\\
+exhaust & temperature\\
+\end{tabular}
+\end{center}
+
+\subsection{UI features}
+\label{sec:org1fc4abb}
+\begin{itemize}
+\item E-Stop (Mute)
+\item abstract mapping
+\end{itemize}
+\subsection{API}
+\label{sec:org9007b89}
+\hyperref[sec:org4775819]{test the api with curl}
+\href{cat \~/py/esp/docs.json|sed 's,\\":,\\n\\t\\t,'|sed  's,\{,,'|sed 's,\},,'|sed 's,\\",,'|sed 's.,..' | sed 's,\\\\n,\\n,' \&}{read            <- docs.json}
+\hyperref[sec:orgfa380a2]{generate docs   -> docs.json}
+\begin{verbatim}
+return "\n".join([l for l in open("./src/api.py", "r").readlines() if l[0] == "@"])
+\end{verbatim}
+
+\subsection{sensors}
+\label{sec:org54d714c}
+\subsubsection{pt100}
+\label{sec:org38dfa17}
+desired resistor for pt100: \textasciitilde{}2.57kOhm
+\subsubsection{OEM DS18B20}
+\label{sec:org5afc2f3}
+\href{https://randomnerdtutorials.com/micropython-ds18b20-esp32-esp8266/}{tutorial for esp32}
+\section{merge org files}
+\label{sec:org844e627}
+\begin{verbatim}
+FILE=~/base.org
+echo "* -> "$FILE
+cat $FILE | sed 's,[*] ,** ,'
+\end{verbatim}
+\end{document}

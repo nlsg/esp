@@ -1,0 +1,2335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-05-28 Sat 17:21 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>esp</title>
+<meta name="author" content="John Doe" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">esp</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orged919e0">1. <span class="todo TODO">TODO</span> separate project agnositc stuff</a></li>
+<li><a href="#orgb1c603a">2. <span class="todo TODO">TODO</span> fix user wheel group problem</a></li>
+<li><a href="#org1e54372">3. <span class="todo TODO">TODO</span> ideas</a>
+<ul>
+<li><a href="#orgd2def34">3.1. try to let gopro (cam) interface with esp</a></li>
+</ul>
+</li>
+<li><a href="#orgbf389f8">4. file-gen</a></li>
+<li><a href="#org37ad0a3">5. hardware</a>
+<ul>
+<li><a href="#orga144f27">5.1. esp32</a>
+<ul>
+<li><a href="#org98b342c">5.1.1. pinout</a></li>
+<li><a href="#orgeafaac9">5.1.2. block-diagram</a></li>
+<li><a href="#orgb5cac33">5.1.3. hacks</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org73696f2">6. API references</a>
+<ul>
+<li><a href="#orga4c719f">6.1. micropython implementation of espressif</a></li>
+<li><a href="#orgf874022">6.2. Microdot</a></li>
+</ul>
+</li>
+<li><a href="#orgbc89001">7. api<sub>test.py</sub></a></li>
+<li><a href="#orged04ea9">8. curl (test API)</a>
+<ul>
+<li>
+<ul>
+<li><a href="#org67f0b53">8.0.1. Root / Doc</a></li>
+<li><a href="#org7136cd5">8.0.2. Digital</a></li>
+<li><a href="#org6981ca5">8.0.3. Analog</a></li>
+<li><a href="#org63f9a00">8.0.4. ds18b20</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org161bddb">9. tools</a>
+<ul>
+<li><a href="#orgb208757">9.1. <span class="todo TODO">TODO</span> document img flashin process</a></li>
+<li><a href="#orgb076352">9.2. <span class="todo TODO">TODO</span> cli<sub>socket.py</sub></a></li>
+<li><a href="#org808c7bc">9.3. doc extractor (docer.py)</a></li>
+<li><a href="#org4d0e6c9">9.4. -&gt; docstrings (2022-05-28 - 17:14:12)</a>
+<ul>
+<li><a href="#org876a6bd">9.4.1. ./src/api.py</a></li>
+<li><a href="#org821ddee">9.4.2. ./src/boot.py</a></li>
+<li><a href="#org6644c0f">9.4.3. ./src/gpio.py</a></li>
+<li><a href="#org4b75c90">9.4.4. ./src/main.py</a></li>
+<li><a href="#orge1d0316">9.4.5. ./src/microdot<sub>asyncio.py</sub></a></li>
+<li><a href="#org89d03c6">9.4.6. ./src/microdot.py</a></li>
+<li><a href="#orgd8ee29f">9.4.7. ./src/micro<sub>func.py</sub></a></li>
+<li><a href="#org586ddd6">9.4.8. ./src/playground.py</a></li>
+<li><a href="#org4c4098e">9.4.9. ./src/pt100.py</a></li>
+<li><a href="#org5e4e867">9.4.10. ./src/repl.py</a></li>
+</ul>
+</li>
+<li><a href="#org159822d">9.5. rshell (filesystem)</a></li>
+<li><a href="#org133aa92">9.6. webrepl<sub>cli</sub> (hotswap code)</a></li>
+<li><a href="#orgdaa3d6c">9.7. screen (connect to console/repl)</a></li>
+<li><a href="#org991a654">9.8. webrepl.html</a></li>
+</ul>
+</li>
+<li><a href="#org0e50afb">10. specification</a>
+<ul>
+<li><a href="#orgb7905f3">10.1. <span class="todo TODO">TODO</span> ULP API</a></li>
+<li><a href="#orgf821afd">10.2. I/Os</a></li>
+<li><a href="#org0408a32">10.3. Control-Loops</a></li>
+<li><a href="#orgf54ad43">10.4. UI features</a></li>
+<li><a href="#orgced9fc9">10.5. API</a></li>
+<li><a href="#orgdaefdef">10.6. sensors</a>
+<ul>
+<li><a href="#org4a9ae7d">10.6.1. pt100</a></li>
+<li><a href="#orgca1390c">10.6.2. OEM DS18B20</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgbc569bd">11. merge org files</a></li>
+</ul>
+</div>
+</div>
+<p>
+[NAME] is a web based dashboard running on a esp32,
+with it, you can control all I/O peripherals plus read some
+metadata from the esp
+</p>
+<div id="outline-container-orged919e0" class="outline-2">
+<h2 id="orged919e0"><span class="section-number-2">1.</span> <span class="todo TODO">TODO</span> separate project agnositc stuff</h2>
+</div>
+<div id="outline-container-orgb1c603a" class="outline-2">
+<h2 id="orgb1c603a"><span class="section-number-2">2.</span> <span class="todo TODO">TODO</span> fix user wheel group problem</h2>
+</div>
+<div id="outline-container-org1e54372" class="outline-2">
+<h2 id="org1e54372"><span class="section-number-2">3.</span> <span class="todo TODO">TODO</span> ideas</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orgd2def34" class="outline-3">
+<h3 id="orgd2def34"><span class="section-number-3">3.1.</span> try to let gopro (cam) interface with esp</h3>
+</div>
+</div>
+<div id="outline-container-orgbf389f8" class="outline-2">
+<h2 id="orgbf389f8"><span class="section-number-2">4.</span> file-gen</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #51afef;">from</span> os <span style="color: #51afef;">import</span> popen
+<span style="color: #83898d;">"""this script outputs an emacs-org table (simple ascii table with '-' and '|'),</span>
+<span style="color: #83898d;">    which is programmatically aggregated.</span>
+<span style="color: #83898d;">    Since this is meant to be used in an org-file,</span>
+<span style="color: #83898d;">    there is a return statement in the global scope"""</span>
+
+<span style="color: #dcaeea;">src</span> = <span style="color: #98be65;">"./src/"</span>              <span style="color: #5B6268;"># </span><span style="color: #5B6268;">src directory from where files are grabbed</span>
+<span style="color: #dcaeea;">url</span> = <span style="color: #98be65;">"192.168.43.31:/"</span>     <span style="color: #5B6268;"># </span><span style="color: #5B6268;">ws domain where files are transferred [col 'esp']</span>
+<span style="color: #dcaeea;">files</span> = popen(f<span style="color: #98be65;">"ls {src}"</span>).read().split(<span style="color: #98be65;">"\n"</span>)[:-<span style="color: #da8548; font-weight: bold;">1</span>]
+
+<span style="color: #dcaeea;">webrepl_cli_bin</span> = <span style="color: #98be65;">"/home/$USER/py/esp/webrepl/webrepl_cli.py"</span> <span style="color: #5B6268;"># </span><span style="color: #5B6268;">[col 'esp']</span>
+
+<span style="color: #dcaeea;">pop</span> = <span style="color: #51afef;">lambda</span> c: popen(c).read()[:-<span style="color: #da8548; font-weight: bold;">1</span>]  <span style="color: #5B6268;"># </span><span style="color: #5B6268;">because it sucks to always read, especially with the last '\n'</span>
+<span style="color: #dcaeea;">tab</span> = <span style="color: #51afef;">lambda</span> l: <span style="color: #98be65;">"|"</span> + <span style="color: #98be65;">"|"</span>.join(l) + <span style="color: #98be65;">"|"</span>   <span style="color: #5B6268;"># </span><span style="color: #5B6268;">outputs the table rows -&gt; |x|y|z|</span>
+<span style="color: #dcaeea;">emacs_link</span> = <span style="color: #51afef;">lambda</span> t,l,n: f<span style="color: #98be65;">"[[{t}:{l}][{n}]]"</span>
+<span style="color: #dcaeea;">f_link</span> = <span style="color: #51afef;">lambda</span> l,n: emacs_link(<span style="color: #98be65;">"file"</span>, l, n)
+<span style="color: #dcaeea;">s_link</span> = <span style="color: #51afef;">lambda</span> l,n: emacs_link(<span style="color: #98be65;">"shell"</span>, l.split(<span style="color: #98be65;">"&amp;"</span>)[<span style="color: #da8548; font-weight: bold;">0</span>] + <span style="color: #98be65;">" &amp;"</span>, n)
+
+<span style="color: #dcaeea;">rows</span> = (
+    {<span style="color: #98be65;">"head"</span>: <span style="color: #98be65;">"files"</span>,
+     <span style="color: #98be65;">"body"</span>: <span style="color: #51afef;">lambda</span> f: f_link(src + f, f),
+     <span style="color: #98be65;">"tail"</span>: f<span style="color: #98be65;">"[[file:{src}][{src}]]"</span>},
+    {<span style="color: #98be65;">"head"</span>: <span style="color: #98be65;">"esp"</span>,
+     <span style="color: #98be65;">"body"</span>: <span style="color: #51afef;">lambda</span> f: s_link(f<span style="color: #98be65;">"{webrepl_cli_bin} {src}{f} {url}{f}"</span>, <span style="color: #98be65;">"-&gt;"</span>),
+     <span style="color: #98be65;">"tail"</span>: <span style="color: #98be65;">""</span>},
+    {<span style="color: #98be65;">"head"</span>: <span style="color: #98be65;">"du"</span>,
+     <span style="color: #98be65;">"body"</span>: <span style="color: #51afef;">lambda</span> f: pop(f<span style="color: #98be65;">"du -h {src}{f}"</span>).split()[<span style="color: #da8548; font-weight: bold;">0</span>],
+     <span style="color: #98be65;">"tail"</span>: pop(f<span style="color: #98be65;">"du -S -h {src}"</span>).split()[<span style="color: #da8548; font-weight: bold;">0</span>]},
+    {<span style="color: #98be65;">"head"</span>: <span style="color: #98be65;">"wc"</span>,
+     <span style="color: #98be65;">"body"</span>: <span style="color: #51afef;">lambda</span> f: <span style="color: #98be65;">", "</span>.join(pop(f<span style="color: #98be65;">"cat {src}{f} |  wc "</span>).split()),
+     <span style="color: #98be65;">"tail"</span>: <span style="color: #98be65;">", "</span>.join(pop(f<span style="color: #98be65;">"cat {src}* |  wc "</span>).split())})
+
+<span style="color: #51afef;">def</span> <span style="color: #c678dd;">table_as_string</span>():
+    <span style="color: #51afef;">return</span> <span style="color: #98be65;">"\n"</span>.join(
+        (tab(c[<span style="color: #98be65;">"head"</span>] <span style="color: #51afef;">for</span> c <span style="color: #51afef;">in</span> rows),
+        <span style="color: #98be65;">"|-"</span>,
+        <span style="color: #98be65;">"\n"</span>.join(tab([c[<span style="color: #98be65;">"body"</span>](f) <span style="color: #51afef;">for</span> c <span style="color: #51afef;">in</span> rows]) <span style="color: #51afef;">for</span> f <span style="color: #51afef;">in</span> files),
+        tab(c[<span style="color: #98be65;">"tail"</span>] <span style="color: #51afef;">for</span> c <span style="color: #51afef;">in</span> rows)))
+
+<span style="color: #51afef;">if</span> <span style="color: #c678dd;">__name__</span> == <span style="color: #98be65;">"__main__"</span>:
+    <span style="color: #51afef;">return</span> table_as_string()  <span style="color: #5B6268;"># </span><span style="color: #5B6268;">for emacs-org src_blocks</span>
+    <span style="color: #5B6268;"># </span><span style="color: #5B6268;">print(table_as_string() # to not get en error otherwise</span>
+</pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #51afef;">import</span> uasyncio; <span style="color: #51afef;">from</span> api <span style="color: #51afef;">import</span> coro
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org37ad0a3" class="outline-2">
+<h2 id="org37ad0a3"><span class="section-number-2">5.</span> hardware</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-orga144f27" class="outline-3">
+<h3 id="orga144f27"><span class="section-number-3">5.1.</span> esp32</h3>
+<div class="outline-text-3" id="text-5-1">
+</div>
+<div id="outline-container-org98b342c" class="outline-4">
+<h4 id="org98b342c"><span class="section-number-4">5.1.1.</span> pinout</h4>
+<div class="outline-text-4" id="text-5-1-1">
+<p>
+<a href="./assets/pinout-0.png">left-side</a>
+<a href="./assets/pinout-1.png">right-side</a>
+<a href="./assets/pinout-disc.png">discription</a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="org2fee7c6"></a>legacy pinouts<br />
+<div class="outline-text-5" id="text-5-1-1-1">
+<p>
+<a href="./assets/esp32-pinout.png">pinout</a>
+<a href="./assets/esp32-pinout1.png">pinout_</a>
+</p>
+</div>
+</li>
+</ol>
+</div>
+<div id="outline-container-orgeafaac9" class="outline-4">
+<h4 id="orgeafaac9"><span class="section-number-4">5.1.2.</span> block-diagram</h4>
+<div class="outline-text-4" id="text-5-1-2">
+<p>
+<a href="./assets/esp32-block-diagram.png">block-diagram</a>
+</p>
+</div>
+</div>
+<div id="outline-container-orgb5cac33" class="outline-4">
+<h4 id="orgb5cac33"><span class="section-number-4">5.1.3.</span> hacks</h4>
+<div class="outline-text-4" id="text-5-1-3">
+<p>
+<a href="https://microcontrollerslab.com/esp32-esp8266-adc-micropython-measure-analog-readings/">make adc resolve 12bit</a>
+<code>adc.atten(ADC.ATTN_11DB)       #3.3V full range of voltage</code>
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org73696f2" class="outline-2">
+<h2 id="org73696f2"><span class="section-number-2">6.</span> API references</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-orga4c719f" class="outline-3">
+<h3 id="orga4c719f"><span class="section-number-3">6.1.</span> <a href="https://docs.micropython.org/en/latest/esp32/quickref.html">micropython implementation of espressif</a></h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+<a href="https://docs.micropython.org/en/latest/library/uasyncio.html">uasyncio</a>
+</p>
+</div>
+</div>
+<div id="outline-container-orgf874022" class="outline-3">
+<h3 id="orgf874022"><span class="section-number-3">6.2.</span> <a href="https://microdot.readthedocs.io/en/latest/api.html">Microdot</a></h3>
+<div class="outline-text-3" id="text-6-2">
+<p>
+<a href="https://bhave.sh/micropython-microdot/">Tut of Microdot</a>
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgbc89001" class="outline-2">
+<h2 id="orgbc89001"><span class="section-number-2">7.</span> api<sub>test.py</sub></h2>
+<div class="outline-text-2" id="text-7">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5B6268;">#</span><span style="color: #5B6268;">!/usr/bin/env python3</span>
+
+<span style="color: #83898d;">"""this script for the [NAME] api"""</span>
+
+<span style="color: #51afef;">import</span> requests
+<span style="color: #51afef;">from</span> time <span style="color: #51afef;">import</span> perf_counter
+
+<span style="color: #dcaeea;">ROOT_URL</span> = <span style="color: #98be65;">"http://192.168.43.31:5000/"</span>
+
+<span style="color: #dcaeea;">get_gen</span> = <span style="color: #51afef;">lambda</span> calls: (requests.get(ROOT_URL + call[<span style="color: #98be65;">"route"</span>], params=call[<span style="color: #98be65;">"payload"</span>]).json()
+                         <span style="color: #51afef;">for</span> call <span style="color: #51afef;">in</span> calls)
+
+<span style="color: #51afef;">def</span> <span style="color: #c678dd;">benchmark</span>(gen, count):
+    <span style="color: #dcaeea;">t1</span> = perf_counter()
+    <span style="color: #51afef;">return</span> {<span style="color: #98be65;">"results"</span>: [[requests.get(ROOT_URL + call[<span style="color: #98be65;">"route"</span>], params=call[<span style="color: #98be65;">"payload"</span>])
+                                .json()
+                        <span style="color: #51afef;">for</span> call <span style="color: #51afef;">in</span> api_calls] <span style="color: #51afef;">for</span> i <span style="color: #51afef;">in</span> <span style="color: #c678dd;">range</span>(count)],
+            <span style="color: #98be65;">"time"</span>: (t := perf_counter() - t1),
+            <span style="color: #98be65;">"count"</span>: count,
+            <span style="color: #98be65;">"average_ms"</span>: t / count,
+            <span style="color: #98be65;">"request/s"</span>: <span style="color: #da8548; font-weight: bold;">1</span> / ( t / count )}
+
+<span style="color: #51afef;">def</span> <span style="color: #c678dd;">pop_keys</span>(keys, *dicts):
+    <span style="color: #83898d;">"""removes all keys in dicts and returns a list of the resulting dicts"""</span>
+    <span style="color: #dcaeea;">res_dict</span> = []
+    <span style="color: #51afef;">for</span> b <span style="color: #51afef;">in</span> dicts:
+        [b.pop(k) <span style="color: #51afef;">for</span> k <span style="color: #51afef;">in</span> keys]
+        res_dict.append(b)
+    <span style="color: #51afef;">return</span> res_dict
+
+<span style="color: #dcaeea;">api_calls</span> = ({<span style="color: #98be65;">"route"</span>: <span style="color: #98be65;">"api/gpio/set"</span>,
+             <span style="color: #98be65;">"payload"</span>: {<span style="color: #98be65;">"pin"</span>:<span style="color: #da8548; font-weight: bold;">26</span>}}, )
+
+<span style="color: #5B6268;"># </span><span style="color: #5B6268;">gpio_bench = pop_keys((), benchmark(get_gen(api_calls), 1))</span>
+<span style="color: #dcaeea;">gpio_bench</span> = benchmark(get_gen(api_calls), <span style="color: #da8548; font-weight: bold;">1</span>)
+
+<span style="color: #51afef;">for</span> report <span style="color: #51afef;">in</span> gpio_bench:
+    <span style="color: #51afef;">for</span> k <span style="color: #51afef;">in</span> report:
+        <span style="color: #51afef;">print</span>(k, <span style="color: #98be65;">" -&gt; "</span>, report[k])
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orged04ea9" class="outline-2">
+<h2 id="orged04ea9"><span class="section-number-2">8.</span> curl (test API)</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+<a href="#orgced9fc9">api spec</a>
+</p>
+</div>
+<div id="outline-container-org67f0b53" class="outline-4">
+<h4 id="org67f0b53"><span class="section-number-4">8.0.1.</span> Root / Doc</h4>
+<div class="outline-text-4" id="text-8-0-1">
+<p>
+<a href="curl 192.168.43.31:5000/ &amp;">/  &lt;-</a>
+<a href="curl -G -d "pin=2" 192.168.43.31:5000/api/gpio &amp;">/gpio &lt;-</a>
+</p>
+</div>
+</div>
+<div id="outline-container-org7136cd5" class="outline-4">
+<h4 id="org7136cd5"><span class="section-number-4">8.0.2.</span> Digital</h4>
+<div class="outline-text-4" id="text-8-0-2">
+<p>
+-&gt; <a href="curl -G -d "pin=2" 192.168.43.31:5000/api/gpio/get &amp;">/gpio/get 2</a>
+-&gt; <a href="curl -G -d "pin=33" 192.168.43.31:5000/api/gpio/get &amp;">curl -G -d "pin=33" 192.168.43.31:5000/api/gpio/get &amp;</a>
+-&gt; <a href="curl -G -d "pin=two" 192.168.43.31:5000/api/gpio/get &amp;">/gpio/get type error str instead of int</a>
+-&gt; <a href="curl -G -d "pin=26" 192.168.43.31:5000/api/gpio/set &amp;">curl -G -d "pin=26" 192.168.43.31:5000/api/gpio/set &amp;</a>
+-&gt; <a href="curl -G -d "pin=2" 192.168.43.31:5000/api/gpio/set &amp;">/gpio/set 2 toggle</a>
+-&gt; <a href="curl -G -d "pin=2" -d "value=0" 192.168.43.31:5000/api/gpio/set &amp;">/gpio/set 2 OFF</a>
+-&gt; <a href="curl -G -d "pin=2" -d "value=1" 192.168.43.31:5000/api/gpio/set &amp;">/gpio/set 2 ON</a>
+-&gt; <a href="curl -G -d "pin=two" -d "value=1" 192.168.43.31:5000/api/gpio/set &amp;">/gpio/set 2 type error str instead of int</a>
+</p>
+</div>
+</div>
+<div id="outline-container-org6981ca5" class="outline-4">
+<h4 id="org6981ca5"><span class="section-number-4">8.0.3.</span> Analog</h4>
+<div class="outline-text-4" id="text-8-0-3">
+<p>
+<a href="curl -G -d "pin=33"  192.168.43.31:5000/api/gpio/read &amp;">/gpio/read 33 &lt;-</a>
+<a href="curl -G -d "pin=two" 192.168.43.31:5000/api/gpio/read &amp;">/gpio/read 33 type error str instead of int &lt;-</a>
+</p>
+</div>
+</div>
+<div id="outline-container-org63f9a00" class="outline-4">
+<h4 id="org63f9a00"><span class="section-number-4">8.0.4.</span> ds18b20</h4>
+<div class="outline-text-4" id="text-8-0-4">
+<p>
+<a href="curl -G -d "pin=4"  192.168.43.31:5000/api/gpio/ds18 &amp;">/gpio/ds18 4 &lt;-</a>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org161bddb" class="outline-2">
+<h2 id="org161bddb"><span class="section-number-2">9.</span> tools</h2>
+<div class="outline-text-2" id="text-9">
+</div>
+<div id="outline-container-orgb208757" class="outline-3">
+<h3 id="orgb208757"><span class="section-number-3">9.1.</span> <span class="todo TODO">TODO</span> document img flashin process</h3>
+</div>
+<div id="outline-container-orgb076352" class="outline-3">
+<h3 id="orgb076352"><span class="section-number-3">9.2.</span> <span class="todo TODO">TODO</span> cli<sub>socket.py</sub></h3>
+<div class="outline-text-3" id="text-9-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #51afef;">import</span> websockets
+<span style="color: #5B6268;">#</span><span style="color: #5B6268;">!/usr/bin/env python</span>
+
+<span style="color: #51afef;">import</span> asyncio
+<span style="color: #51afef;">import</span> websockets
+
+<span style="color: #dcaeea;">uri</span> = <span style="color: #98be65;">"ws://192.168.43.31:8266"</span>
+
+<span style="color: #51afef;">async def</span> <span style="color: #c678dd;">hello</span>():
+    <span style="color: #dcaeea;">msg</span> = <span style="color: #98be65;">""</span>
+    <span style="color: #51afef;">async with</span> websockets.connect(uri) <span style="color: #51afef;">as</span> websocket:
+        <span style="color: #51afef;">await</span> websocket.send(msg)
+        <span style="color: #dcaeea;">msg</span> = <span style="color: #c678dd;">input</span>(<span style="color: #98be65;">"&gt;&gt;&gt;"</span> + <span style="color: #51afef;">await</span> websocket.recv())
+
+asyncio.run(hello())
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org808c7bc" class="outline-3">
+<h3 id="org808c7bc"><span class="section-number-3">9.3.</span> doc extractor (docer.py)</h3>
+<div class="outline-text-3" id="text-9-3">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5B6268;">#</span><span style="color: #5B6268;">!/usr/bin/env python</span>
+<span style="color: #83898d;">"""this python script extracts signature and docstring, of given functions.</span>
+<span style="color: #83898d;">Recogniseing decoratores is yet not implemented.</span>
+<span style="color: #83898d;">The data is then outputed to a json or org file,</span>
+<span style="color: #83898d;">later is especially usefull, if this script is</span>
+<span style="color: #83898d;">implemented in a org file. In that case, make</span>
+<span style="color: #83898d;">sure that the src_block has the ':results raw' option added</span>
+<span style="color: #83898d;">"""</span>
+
+<span style="color: #51afef;">from</span> os <span style="color: #51afef;">import</span> popen
+<span style="color: #51afef;">from</span> json <span style="color: #51afef;">import</span> dump
+<span style="color: #51afef;">from</span> datetime <span style="color: #51afef;">import</span> datetime <span style="color: #51afef;">as</span> dt
+
+<span style="color: #dcaeea;">SRC_PATH</span> = <span style="color: #98be65;">"./src/"</span>
+<span style="color: #dcaeea;">OUT_FILE</span> = <span style="color: #98be65;">"./docs.json"</span>
+
+<span style="color: #dcaeea;">files</span> = [SRC_PATH + f <span style="color: #51afef;">for</span> f <span style="color: #51afef;">in</span> popen(<span style="color: #98be65;">"ls ./src"</span>).read().split(<span style="color: #98be65;">"\n"</span>) <span style="color: #51afef;">if</span> <span style="color: #98be65;">".py"</span> <span style="color: #51afef;">in</span> f]
+
+<span style="color: #51afef;">def</span> <span style="color: #c678dd;">extract_docs</span>(files):
+    <span style="color: #83898d;">"""outputs a dict with given filenames as keys,</span>
+<span style="color: #83898d;">    whose values are dicts with function signature</span>
+<span style="color: #83898d;">    and docstring key value pairs"""</span>
+    <span style="color: #dcaeea;">docs</span> = {}
+    <span style="color: #51afef;">for</span> <span style="color: #c678dd;">file</span> <span style="color: #51afef;">in</span> files:
+        <span style="color: #dcaeea;">functions</span> = {}
+        <span style="color: #51afef;">for</span> f <span style="color: #51afef;">in</span> <span style="color: #98be65;">""</span>.join(<span style="color: #c678dd;">open</span>(<span style="color: #c678dd;">file</span>, <span style="color: #98be65;">"r"</span>).readlines()).split(<span style="color: #98be65;">"def "</span>):
+            <span style="color: #51afef;">try</span>:
+                <span style="color: #dcaeea;">doc</span> = f.split(<span style="color: #98be65;">'"""'</span>)[<span style="color: #da8548; font-weight: bold;">1</span>]
+            <span style="color: #51afef;">except</span> <span style="color: #ECBE7B;">IndexError</span>:
+                <span style="color: #dcaeea;">doc</span> = <span style="color: #98be65;">"N/A"</span>
+            functions.update({f.split(<span style="color: #98be65;">"\n"</span>)[<span style="color: #da8548; font-weight: bold;">0</span>]: doc})
+        docs.update({<span style="color: #c678dd;">file</span>: functions})
+    <span style="color: #51afef;">return</span> docs
+
+<span style="color: #51afef;">def</span> <span style="color: #c678dd;">dict_to_org</span>(d, indent=<span style="color: #da8548; font-weight: bold;">1</span>):
+    <span style="color: #83898d;">"""recursivly transforms a dict to an org-file.</span>
+<span style="color: #83898d;">    The heading level is controled by the indent parameter</span>
+<span style="color: #83898d;">    e.g.</span>
+<span style="color: #83898d;">    &gt;&gt;&gt; dict_to_org({"foo":"bar","bar"{"oof":"baz"}}, indent=2)"""</span>
+    <span style="color: #5B6268;"># </span><span style="color: #5B6268;">** foo</span>
+    <span style="color: #5B6268;">#    </span><span style="color: #5B6268;">bar</span>
+    <span style="color: #5B6268;"># </span><span style="color: #5B6268;">** bar</span>
+    <span style="color: #5B6268;"># </span><span style="color: #5B6268;">*** off</span>
+    <span style="color: #5B6268;">#     </span><span style="color: #5B6268;">baz</span>
+    <span style="color: #51afef;">return</span> <span style="color: #98be65;">"\n"</span>.join([
+        <span style="color: #98be65;">"\n"</span>.join((
+            <span style="color: #98be65;">"*"</span>*(indent) + <span style="color: #98be65;">" "</span> + <span style="color: #c678dd;">str</span>(k),
+            dict_to_org(d[k], indent+<span style="color: #da8548; font-weight: bold;">1</span>)
+            <span style="color: #51afef;">if</span> <span style="color: #c678dd;">isinstance</span>(d[k], <span style="color: #c678dd;">dict</span>)
+            <span style="color: #51afef;">else</span> <span style="color: #c678dd;">str</span>(d[k])))
+        <span style="color: #51afef;">for</span> k <span style="color: #51afef;">in</span> d])
+
+<span style="color: #51afef;">return</span> <span style="color: #98be65;">"** -&gt; docstrings ("</span> \
+        + dt.now().strftime(<span style="color: #98be65;">"%Y-%m-%d - %H:%M:%S"</span>) \
+        + <span style="color: #98be65;">")\n"</span> \
+        + dict_to_org(extract_docs(files), indent=<span style="color: #da8548; font-weight: bold;">3</span>)
+
+<span style="color: #5B6268;"># </span><span style="color: #5B6268;">dump(docs, open(OUT_FILE, "w"), indent=2)</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org4d0e6c9" class="outline-3">
+<h3 id="org4d0e6c9"><span class="section-number-3">9.4.</span> -&gt; docstrings (2022-05-28 - 17:14:12)</h3>
+<div class="outline-text-3" id="text-9-4">
+</div>
+<div id="outline-container-org876a6bd" class="outline-4">
+<h4 id="org876a6bd"><span class="section-number-4">9.4.1.</span> ./src/api.py</h4>
+<div class="outline-text-4" id="text-9-4-1">
+</div>
+<ol class="org-ol">
+<li><a id="org3c0bed3"></a>#!/usr/bin/env python3<br />
+<div class="outline-text-5" id="text-9-4-1-1">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="orgf1011f3"></a>before<sub>request</sub><sub>handler</sub>(request):<br />
+<div class="outline-text-5" id="text-9-4-1-2">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org0596539"></a>root(request):<br />
+<div class="outline-text-5" id="text-9-4-1-3">
+<p>
+the root node
+</p>
+</div>
+</li>
+<li><a id="org2fe2c0b"></a>api<sub>documentation</sub>(request):<br />
+<div class="outline-text-5" id="text-9-4-1-4">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org03c22cc"></a>api<sub>gpio</sub>(request, function):<br />
+<div class="outline-text-5" id="text-9-4-1-5">
+<p>
+api rout
+</p>
+</div>
+</li>
+<li><a id="orgbfb2cc6"></a>dummy<sub>coro</sub>(pin):<br />
+<div class="outline-text-5" id="text-9-4-1-6">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org9d03cf0"></a>main():<br />
+<div class="outline-text-5" id="text-9-4-1-7">
+<p>
+N/A
+</p>
+</div>
+</li>
+</ol>
+</div>
+<div id="outline-container-org821ddee" class="outline-4">
+<h4 id="org821ddee"><span class="section-number-4">9.4.2.</span> ./src/boot.py</h4>
+<div class="outline-text-4" id="text-9-4-2">
+</div>
+<ol class="org-ol">
+<li><a id="orgf41fe31"></a>#!/usr/bin/env python<br />
+<div class="outline-text-5" id="text-9-4-2-1">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org41fd5b5"></a>do<sub>connect</sub>(ssid, pwd):<br />
+<div class="outline-text-5" id="text-9-4-2-2">
+<p>
+a safe way to connect to a network
+</p>
+</div>
+</li>
+</ol>
+</div>
+<div id="outline-container-org6644c0f" class="outline-4">
+<h4 id="org6644c0f"><span class="section-number-4">9.4.3.</span> ./src/gpio.py</h4>
+<div class="outline-text-4" id="text-9-4-3">
+</div>
+<ol class="org-ol">
+<li><a id="org6de53b2"></a>#!/usr/bin/env python3<br />
+<div class="outline-text-5" id="text-9-4-3-1">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="orgf69d762"></a>get<sub>pin</sub>(pin=None, **kwargs):<br />
+<div class="outline-text-5" id="text-9-4-3-2">
+<p>
+get the value of a digital output pin
+    arguments:
+</p>
+<ul class="org-ul">
+<li>pin: the pin on which a value is read</li>
+</ul>
+<p>
+return -&gt; value of the pin
+</p>
+</div>
+</li>
+<li><a id="org29de5a1"></a>read<sub>pin</sub>(pin):<br />
+<div class="outline-text-5" id="text-9-4-3-3">
+<p>
+read the value of a pin,
+    which needs to have an internal ADC
+    arguments:
+</p>
+<ul class="org-ul">
+<li>pin:  the pin in which the value will be read</li>
+<li>unit: the unit in which the read value should be interpreted,
+possible units are:
+<ul class="org-ul">
+<li>raw [12bit value] &lt;default&gt;</li>
+<li>voltage [volt]</li>
+<li>resistance [ohm]</li>
+<li>pt100 [floating point in degres celsius]</li>
+</ul></li>
+</ul>
+</div>
+</li>
+<li><a id="org974ea73"></a>read<sub>pt100</sub>(pin, sample<sub>size</sub>=10, delay=.1, **kwargs):<br />
+<div class="outline-text-5" id="text-9-4-3-4">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="orgd9e9589"></a>read<sub>ds18b20</sub>(pin):<br />
+<div class="outline-text-5" id="text-9-4-3-5">
+<p>
+reads temperature from a ds18b20 or ds18b20 sensors
+    to support multiple sensors on one pin,
+    the values are returned in a dict {&ldquo;addr&rdquo;: val}
+</p>
+<ul class="org-ul">
+<li>addr: 64bit hex address-string</li>
+<li>val:  value in degres represented as float</li>
+</ul>
+
+<p>
+the data pin of the ds18b20 sensor
+must be pulled up by a 4.7 kOhm resistor
+</p>
+</div>
+</li>
+<li><a id="orgab65f86"></a>set<sub>pin</sub>(pin, value=None, **kwargs):<br />
+<div class="outline-text-5" id="text-9-4-3-6">
+<p>
+set the pin to value
+    arguments:
+</p>
+<ul class="org-ul">
+<li>pin:    to pin to act on</li>
+<li>value:  to set the pin to (0,1)
+default value is None, in this case,
+the pin will toggle</li>
+</ul>
+<p>
+return -&gt; value of the pin ( probably status feedback )
+</p>
+</div>
+</li>
+<li><a id="orgca6e01b"></a>pwm<sub>pin</sub>(pin, freq=None, duty<sub>u16</sub>=None, duty<sub>ns</sub>=None, deinit=False, **kwargs):<br />
+<div class="outline-text-5" id="text-9-4-3-7">
+<p>
+set pwm value of given pin
+    arguments:
+</p>
+<ul class="org-ul">
+<li>pin:    the pin on which a pwm value will be set</li>
+<li>freq</li>
+</ul>
+<p>
+<a href="https://docs.micropython.org/en/latest/library/machine.PWM.html#machine-pwm">https://docs.micropython.org/en/latest/library/machine.PWM.html#machine-pwm</a>
+</p>
+</div>
+</li>
+</ol>
+</div>
+
+<div id="outline-container-org4b75c90" class="outline-4">
+<h4 id="org4b75c90"><span class="section-number-4">9.4.4.</span> ./src/main.py</h4>
+<div class="outline-text-4" id="text-9-4-4">
+</div>
+<ol class="org-ol">
+<li><a id="org84f0ab8"></a>#!/usr/bin/env python3<br />
+<div class="outline-text-5" id="text-9-4-4-1">
+<p>
+N/A
+</p>
+</div>
+</li>
+</ol>
+</div>
+<div id="outline-container-orge1d0316" class="outline-4">
+<h4 id="orge1d0316"><span class="section-number-4">9.4.5.</span> ./src/microdot<sub>asyncio.py</sub></h4>
+<div class="outline-text-4" id="text-9-4-5">
+</div>
+<ol class="org-ol">
+<li><a id="orgc86e9e5"></a>#!/usr/bin/env python<br />
+<div class="outline-text-5" id="text-9-4-5-1">
+<p>
+microdot<sub>asyncio</sub>
+</p>
+<hr />
+
+<p>
+The ``microdot<sub>asyncio</sub>`` module defines a few classes that help implement
+HTTP-based servers for MicroPython and standard Python that use ``asyncio``
+and coroutines.
+</p>
+</div>
+</li>
+
+<li><a id="orgeb36db1"></a>_iscoroutine(coro):<br />
+<div class="outline-text-5" id="text-9-4-5-2">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org4f38d22"></a>_<sub>init</sub>_<sub>(self, data)</sub>:<br />
+<div class="outline-text-5" id="text-9-4-5-3">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="orgdaca0b7"></a>read(self, n=-1):<br />
+<div class="outline-text-5" id="text-9-4-5-4">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="orgc051c9e"></a>readline(self):  # pragma: no cover<br />
+<div class="outline-text-5" id="text-9-4-5-5">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="orga9c99ca"></a>readexactly(self, n):  # pragma: no cover<br />
+<div class="outline-text-5" id="text-9-4-5-6">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org81832ab"></a>readuntil(self, separator=b&rsquo;\n&rsquo;):  # pragma: no cover<br />
+<div class="outline-text-5" id="text-9-4-5-7">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="orgb822fba"></a>create(app, client<sub>stream</sub>, client<sub>addr</sub>):<br />
+<div class="outline-text-5" id="text-9-4-5-8">
+<p>
+Create a request object.
+</p>
+
+<p>
+:param app: The Microdot application instance.
+:param client<sub>stream</sub>: An input stream from where the request data can
+                      be read.
+:param client<sub>addr</sub>: The address of the client, as a tuple.
+</p>
+
+<p>
+This method is a coroutine. It returns a newly created ``Request``
+object.
+</p>
+</div>
+</li>
+
+<li><a id="orgc18d190"></a>stream(self):<br />
+<div class="outline-text-5" id="text-9-4-5-9">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="orgc0babe9"></a>_safe<sub>readline</sub>(stream):<br />
+<div class="outline-text-5" id="text-9-4-5-10">
+<p>
+An HTTP response class.
+</p>
+
+<p>
+:param body: The body of the response. If a dictionary or list is given,
+             a JSON formatter is used to generate the body.
+:param status<sub>code</sub>: The numeric HTTP status code of the response. The
+                    default is 200.
+:param headers: A dictionary of headers to include in the response.
+:param reason: A custom reason phrase to add after the status code. The
+               default is &ldquo;OK&rdquo; for responses with a 200 status code and
+               &ldquo;N/A&rdquo; for any other status codes.
+</p>
+</div>
+</li>
+
+<li><a id="orga42f155"></a>write(self, stream):<br />
+<div class="outline-text-5" id="text-9-4-5-11">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org961d4e2"></a>start<sub>server</sub>(self, host=&rsquo;0.0.0.0&rsquo;, port=5000, debug=False):<br />
+<div class="outline-text-5" id="text-9-4-5-12">
+<p>
+Start the Microdot web server as a coroutine. This coroutine does
+        not normally return, as the server enters an endless listening loop.
+        The :func:`shutdown` function provides a method for terminating the
+        server gracefully.
+</p>
+
+<p>
+:param host: The hostname or IP address of the network interface that
+             will be listening for requests. A value of ``&rsquo;0.0.0.0&rsquo;``
+             (the default) indicates that the server should listen for
+             requests on all the available interfaces, and a value of
+             ``127.0.0.1`` indicates that the server should listen
+             for requests only on the internal networking interface of
+             the host.
+:param port: The port number to listen for requests. The default is
+             port 5000.
+:param debug: If ``True``, the server logs debugging information. The
+              default is ``False``.
+</p>
+
+<p>
+This method is a coroutine.
+</p>
+
+<p>
+Example::
+</p>
+
+<p>
+import asyncio
+from microdot<sub>asyncio</sub> import Microdot
+</p>
+
+<p>
+app = Microdot()
+</p>
+
+<p>
+@app.route(&rsquo;/&rsquo;)
+async
+</p>
+</div>
+</li>
+<li><a id="org17ff3af"></a>index():<br />
+<div class="outline-text-5" id="text-9-4-5-13">
+<p>
+asyncio.run(self.start<sub>server</sub>(host=host, port=port, debug=debug))
+</p>
+</div>
+</li>
+
+
+<li><a id="org136a869"></a>main():<br />
+<div class="outline-text-5" id="text-9-4-5-14">
+<p>
+self.debug = debug
+</p>
+
+<p>
+async
+</p>
+</div>
+</li>
+<li><a id="orgea775b5"></a>serve(reader, writer):<br />
+<div class="outline-text-5" id="text-9-4-5-15">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org38cc21d"></a>awrite(self, data):<br />
+<div class="outline-text-5" id="text-9-4-5-16">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org9962240"></a>aclose(self):<br />
+<div class="outline-text-5" id="text-9-4-5-17">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="orgb853005"></a>run(self, host=&rsquo;0.0.0.0&rsquo;, port=5000, debug=False):<br />
+<div class="outline-text-5" id="text-9-4-5-18">
+<p>
+Start the web server. This function does not normally return, as
+        the server enters an endless listening loop. The :func:`shutdown`
+        function provides a method for terminating the server gracefully.
+</p>
+
+<p>
+:param host: The hostname or IP address of the network interface that
+             will be listening for requests. A value of ``&rsquo;0.0.0.0&rsquo;``
+             (the default) indicates that the server should listen for
+             requests on all the available interfaces, and a value of
+             ``127.0.0.1`` indicates that the server should listen
+             for requests only on the internal networking interface of
+             the host.
+:param port: The port number to listen for requests. The default is
+             port 5000.
+:param debug: If ``True``, the server logs debugging information. The
+              default is ``False``.
+</p>
+
+<p>
+Example::
+</p>
+
+<p>
+from microdot<sub>asyncio</sub> import Microdot
+</p>
+
+<p>
+app = Microdot()
+</p>
+
+<p>
+@app.route(&rsquo;/&rsquo;)
+async
+</p>
+</div>
+</li>
+<li><a id="orgb18698f"></a>shutdown(self):<br />
+<div class="outline-text-5" id="text-9-4-5-19">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="orgdbd5020"></a>dispatch<sub>request</sub>(self, reader, writer):<br />
+<div class="outline-text-5" id="text-9-4-5-20">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="orge3708a6"></a>_invoke<sub>handler</sub>(self, f<sub>or</sub><sub>coro</sub>, *args, **kwargs):<br />
+<div class="outline-text-5" id="text-9-4-5-21">
+<p>
+N/A
+</p>
+</div>
+</li>
+</ol>
+</div>
+<div id="outline-container-org89d03c6" class="outline-4">
+<h4 id="org89d03c6"><span class="section-number-4">9.4.6.</span> ./src/microdot.py</h4>
+<div class="outline-text-4" id="text-9-4-6">
+</div>
+<ol class="org-ol">
+<li><a id="org6313097"></a>#!/usr/bin/env python<br />
+<div class="outline-text-5" id="text-9-4-6-1">
+<p>
+microdot
+</p>
+<hr />
+
+<p>
+The ``microdot`` module defines a few classes that help implement HTTP-based
+servers for MicroPython and standard Python, with multithreading support for
+Python interpreters that support it.
+</p>
+</div>
+</li>
+
+<li><a id="org72f7ece"></a>print<sub>exception</sub>(exc):<br />
+<div class="outline-text-5" id="text-9-4-6-2">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org8a6c619"></a>create<sub>thread</sub>(f, *args, **kwargs):<br />
+<div class="outline-text-5" id="text-9-4-6-3">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="orgc2a529e"></a>run():<br />
+<div class="outline-text-5" id="text-9-4-6-4">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org8dce6bb"></a>urldecode(string):<br />
+<div class="outline-text-5" id="text-9-4-6-5">
+<p>
+A subclass of dictionary that can hold multiple values for the same
+    key. It is used to hold key/value pairs decoded from query strings and
+    form submissions.
+</p>
+
+<p>
+:param initial<sub>dict</sub>: an initial dictionary of key/value pairs to
+                     initialize this object with.
+</p>
+
+<p>
+Example::
+</p>
+
+<p>
+&gt;&gt;&gt; d = MultiDict()
+&gt;&gt;&gt; d[&rsquo;sort&rsquo;] = &rsquo;name&rsquo;
+&gt;&gt;&gt; d[&rsquo;sort&rsquo;] = &rsquo;email&rsquo;
+&gt;&gt;&gt; print(d[&rsquo;sort&rsquo;])
+&rsquo;name&rsquo;
+&gt;&gt;&gt; print(d.getlist(&rsquo;sort&rsquo;))
+[&rsquo;name&rsquo;, &rsquo;email&rsquo;]
+</p>
+</div>
+</li>
+
+<li><a id="org4c00beb"></a>_<sub>init</sub>_<sub>(self, initial<sub>dict</sub>=None)</sub>:<br />
+<div class="outline-text-5" id="text-9-4-6-6">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org666cc49"></a>_<sub>setitem</sub>_<sub>(self, key, value)</sub>:<br />
+<div class="outline-text-5" id="text-9-4-6-7">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org98d131f"></a>_<sub>getitem</sub>_<sub>(self, key)</sub>:<br />
+<div class="outline-text-5" id="text-9-4-6-8">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org4449bb0"></a>get(self, key, default=None, type=None):<br />
+<div class="outline-text-5" id="text-9-4-6-9">
+<p>
+Return the value for a given key.
+</p>
+
+<p>
+:param key: The key to retrieve.
+:param default: A default value to use if the key does not exist.
+:param type: A type conversion callable to apply to the value.
+</p>
+
+<p>
+If the multidict contains more than one value for the requested key,
+this method returns the first value only.
+</p>
+
+<p>
+Example::
+</p>
+
+<p>
+&gt;&gt;&gt; d = MultiDict()
+&gt;&gt;&gt; d[&rsquo;age&rsquo;] = &rsquo;42&rsquo;
+&gt;&gt;&gt; d.get(&rsquo;age&rsquo;)
+&rsquo;42&rsquo;
+&gt;&gt;&gt; d.get(&rsquo;age&rsquo;, type=int)
+42
+&gt;&gt;&gt; d.get(&rsquo;name&rsquo;, default=&rsquo;noname&rsquo;)
+&rsquo;noname&rsquo;
+</p>
+</div>
+</li>
+
+<li><a id="orgf918b7a"></a>getlist(self, key, type=None):<br />
+<div class="outline-text-5" id="text-9-4-6-10">
+<p>
+Return all the values for a given key.
+</p>
+
+<p>
+:param key: The key to retrieve.
+:param type: A type conversion callable to apply to the values.
+</p>
+
+<p>
+If the requested key does not exist in the dictionary, this method
+returns an empty list.
+</p>
+
+<p>
+Example::
+</p>
+
+<p>
+&gt;&gt;&gt; d = MultiDict()
+&gt;&gt;&gt; d.getlist(&rsquo;items&rsquo;)
+[]
+&gt;&gt;&gt; d[&rsquo;items&rsquo;] = &rsquo;3&rsquo;
+&gt;&gt;&gt; d.getlist(&rsquo;items&rsquo;)
+[&rsquo;3&rsquo;]
+&gt;&gt;&gt; d[&rsquo;items&rsquo;] = &rsquo;56&rsquo;
+&gt;&gt;&gt; d.getlist(&rsquo;items&rsquo;)
+[&rsquo;3&rsquo;, &rsquo;56&rsquo;]
+&gt;&gt;&gt; d.getlist(&rsquo;items&rsquo;, type=int)
+[3, 56]
+</p>
+</div>
+</li>
+
+<li><a id="org5702186"></a>_<sub>init</sub>__(self, app, client<sub>addr</sub>, method, url, http<sub>version</sub>, headers,<br />
+<div class="outline-text-5" id="text-9-4-6-11">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="orgbc9c988"></a>create(app, client<sub>stream</sub>, client<sub>addr</sub>):<br />
+<div class="outline-text-5" id="text-9-4-6-12">
+<p>
+Create a request object.
+</p>
+
+<p>
+:param app: The Microdot application instance.
+:param client<sub>stream</sub>: An input stream from where the request data can
+                      be read.
+:param client<sub>addr</sub>: The address of the client, as a tuple.
+</p>
+
+<p>
+This method returns a newly created ``Request`` object.
+</p>
+</div>
+</li>
+
+<li><a id="org01484d0"></a>_parse<sub>urlencoded</sub>(self, urlencoded):<br />
+<div class="outline-text-5" id="text-9-4-6-13">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org7f4cdc5"></a>body(self):<br />
+<div class="outline-text-5" id="text-9-4-6-14">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="orgd392355"></a>stream(self):<br />
+<div class="outline-text-5" id="text-9-4-6-15">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="orgce7fc2f"></a>json(self):<br />
+<div class="outline-text-5" id="text-9-4-6-16">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org8cb79d0"></a>form(self):<br />
+<div class="outline-text-5" id="text-9-4-6-17">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="orgf7e2a33"></a>_safe<sub>readline</sub>(stream):<br />
+<div class="outline-text-5" id="text-9-4-6-18">
+<p>
+An HTTP response class.
+</p>
+
+<p>
+:param body: The body of the response. If a dictionary or list is given,
+             a JSON formatter is used to generate the body.
+:param status<sub>code</sub>: The numeric HTTP status code of the response. The
+                    default is 200.
+:param headers: A dictionary of headers to include in the response.
+:param reason: A custom reason phrase to add after the status code. The
+               default is &ldquo;OK&rdquo; for responses with a 200 status code and
+               &ldquo;N/A&rdquo; for any other status codes.
+</p>
+</div>
+</li>
+
+<li><a id="org40706eb"></a>_<sub>init</sub>_<sub>(self, body=&rsquo;&rsquo;, status<sub>code</sub>=200, headers=None, reason=None)</sub>:<br />
+<div class="outline-text-5" id="text-9-4-6-19">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="orgfcbdec9"></a>set<sub>cookie</sub>(self, cookie, value, path=None, domain=None, expires=None,<br />
+<div class="outline-text-5" id="text-9-4-6-20">
+<p>
+Add a cookie to the response.
+</p>
+
+<p>
+:param cookie: The cookie&rsquo;s name.
+:param value: The cookie&rsquo;s value.
+:param path: The cookie&rsquo;s path.
+:param domain: The cookie&rsquo;s domain.
+:param expires: The cookie expiration time, as a ``datetime`` object.
+:param max<sub>age</sub>: The cookie&rsquo;s ``Max-Age`` value.
+:param secure: The cookie&rsquo;s ``secure`` flag.
+:param http<sub>only</sub>: The cookie&rsquo;s ``HttpOnly`` flag.
+</p>
+</div>
+</li>
+
+<li><a id="org7479cf1"></a>complete(self):<br />
+<div class="outline-text-5" id="text-9-4-6-21">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org4e90b9c"></a>write(self, stream):<br />
+<div class="outline-text-5" id="text-9-4-6-22">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org2d8dfc4"></a>redirect(cls, location, status<sub>code</sub>=302):<br />
+<div class="outline-text-5" id="text-9-4-6-23">
+<p>
+Return a redirect response.
+</p>
+
+<p>
+:param location: The URL to redirect to.
+:param status<sub>code</sub>: The 3xx status code to use for the redirect. The
+                    default is 302.
+</p>
+</div>
+</li>
+
+<li><a id="org04c676b"></a>send<sub>file</sub>(cls, filename, status<sub>code</sub>=200, content<sub>type</sub>=None):<br />
+<div class="outline-text-5" id="text-9-4-6-24">
+<p>
+Send file contents in a response.
+</p>
+
+<p>
+:param filename: The filename of the file.
+:param status<sub>code</sub>: The 3xx status code to use for the redirect. The
+                    default is 302.
+:param content<sub>type</sub>: The ``Content-Type`` header to use in the
+                     response. If omitted, it is generated
+                     automatically from the file extension.
+</p>
+
+<p>
+Security note: The filename is assumed to be trusted. Never pass
+filenames provided by the user before validating and sanitizing them
+first.
+</p>
+</div>
+</li>
+
+<li><a id="orgf8a67b2"></a>_<sub>init</sub>_<sub>(self, url<sub>pattern</sub>)</sub>:<br />
+<div class="outline-text-5" id="text-9-4-6-25">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org72747eb"></a>match(self, path):<br />
+<div class="outline-text-5" id="text-9-4-6-26">
+<p>
+An HTTP application class.
+</p>
+
+<p>
+This class implements an HTTP application instance and is heavily
+influenced by the ``Flask`` class of the Flask framework. It is typically
+declared near the start of the main application script.
+</p>
+
+<p>
+Example::
+</p>
+
+<p>
+from microdot import Microdot
+</p>
+
+<p>
+app = Microdot()
+</p>
+</div>
+</li>
+
+<li><a id="org41c8ac0"></a>_<sub>init</sub>_<sub>(self)</sub>:<br />
+<div class="outline-text-5" id="text-9-4-6-27">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org439e2eb"></a>route(self, url<sub>pattern</sub>, methods=None):<br />
+<div class="outline-text-5" id="text-9-4-6-28">
+<p>
+Decorator that is used to register a function as a request handler
+        for a given URL.
+</p>
+
+<p>
+:param url<sub>pattern</sub>: The URL pattern that will be compared against
+                    incoming requests.
+:param methods: The list of HTTP methods to be handled by the
+                decorated function. If omitted, only ``GET`` requests
+                are handled.
+</p>
+
+<p>
+The URL pattern can be a static path (for example, ``/users`` or
+``/api/invoices/search``) or a path with dynamic components enclosed
+in ``&lt;`` and ``&gt;`` (for example, ``/users/&lt;id&gt;`` or
+``/invoices/&lt;number&gt;/products``). Dynamic path components can also
+include a type prefix, separated from the name with a colon (for
+example, ``/users/&lt;int:id&gt;``). The type can be ``string`` (the
+default), ``int``, ``path`` or ``re:[regular-expression]``.
+</p>
+
+<p>
+The first argument of the decorated function must be
+the request object. Any path arguments that are specified in the URL
+pattern are passed as keyword arguments. The return value of the
+function must be a :class:`Response` instance, or the arguments to
+be passed to this class.
+</p>
+
+<p>
+Example::
+</p>
+
+<p>
+@app.route(&rsquo;/&rsquo;)
+</p>
+</div>
+</li>
+
+<li><a id="org43cba04"></a>index(request):<br /></li>
+
+
+<li><a id="org31d1115"></a>decorated(f):<br />
+<div class="outline-text-5" id="text-9-4-6-30">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="orgcb11e98"></a>get(self, url<sub>pattern</sub>):<br />
+<div class="outline-text-5" id="text-9-4-6-31">
+<p>
+Decorator that is used to register a function as a ``GET`` request
+        handler for a given URL.
+</p>
+
+<p>
+:param url<sub>pattern</sub>: The URL pattern that will be compared against
+                    incoming requests.
+</p>
+
+<p>
+This decorator can be used as an alias to the ``route`` decorator with
+``methods=[&rsquo;GET&rsquo;]``.
+</p>
+
+<p>
+Example::
+</p>
+
+<p>
+@app.get(&rsquo;/users/&lt;int:id&gt;&rsquo;)
+</p>
+</div>
+</li>
+
+<li><a id="orgf4a3b8e"></a>get<sub>user</sub>(request, id):<br />
+<div class="outline-text-5" id="text-9-4-6-32">
+<p>
+return self.route(url<sub>pattern</sub>, methods=[&rsquo;GET&rsquo;])
+</p>
+</div>
+</li>
+
+
+<li><a id="org602752d"></a>post(self, url<sub>pattern</sub>):<br />
+<div class="outline-text-5" id="text-9-4-6-33">
+<p>
+Decorator that is used to register a function as a ``POST`` request
+        handler for a given URL.
+</p>
+
+<p>
+:param url<sub>pattern</sub>: The URL pattern that will be compared against
+                    incoming requests.
+</p>
+
+<p>
+This decorator can be used as an alias to the``route`` decorator with
+``methods=[&rsquo;POST&rsquo;]``.
+</p>
+
+<p>
+Example::
+</p>
+
+<p>
+@app.post(&rsquo;/users&rsquo;)
+</p>
+</div>
+</li>
+
+<li><a id="orgfe6b3d1"></a>create<sub>user</sub>(request):<br />
+<div class="outline-text-5" id="text-9-4-6-34">
+<p>
+return self.route(url<sub>pattern</sub>, methods=[&rsquo;POST&rsquo;])
+</p>
+</div>
+</li>
+
+
+<li><a id="org4b2cd5a"></a>put(self, url<sub>pattern</sub>):<br />
+<div class="outline-text-5" id="text-9-4-6-35">
+<p>
+Decorator that is used to register a function as a ``PUT`` request
+        handler for a given URL.
+</p>
+
+<p>
+:param url<sub>pattern</sub>: The URL pattern that will be compared against
+                    incoming requests.
+</p>
+
+<p>
+This decorator can be used as an alias to the ``route`` decorator with
+``methods=[&rsquo;PUT&rsquo;]``.
+</p>
+
+<p>
+Example::
+</p>
+
+<p>
+@app.put(&rsquo;/users/&lt;int:id&gt;&rsquo;)
+</p>
+</div>
+</li>
+
+<li><a id="orgf19c8fb"></a>edit<sub>user</sub>(request, id):<br />
+<div class="outline-text-5" id="text-9-4-6-36">
+<p>
+return self.route(url<sub>pattern</sub>, methods=[&rsquo;PATCH&rsquo;])
+</p>
+</div>
+</li>
+
+
+<li><a id="org12b9d89"></a>patch(self, url<sub>pattern</sub>):<br />
+<div class="outline-text-5" id="text-9-4-6-37">
+<p>
+Decorator that is used to register a function as a ``PATCH`` request
+        handler for a given URL.
+</p>
+
+<p>
+:param url<sub>pattern</sub>: The URL pattern that will be compared against
+                    incoming requests.
+</p>
+
+<p>
+This decorator can be used as an alias to the ``route`` decorator with
+``methods=[&rsquo;PATCH&rsquo;]``.
+</p>
+
+<p>
+Example::
+</p>
+
+<p>
+@app.patch(&rsquo;/users/&lt;int:id&gt;&rsquo;)
+</p>
+</div>
+</li>
+
+<li><a id="orgb54616e"></a>delete(self, url<sub>pattern</sub>):<br />
+<div class="outline-text-5" id="text-9-4-6-38">
+<p>
+Decorator that is used to register a function as a ``DELETE``
+        request handler for a given URL.
+</p>
+
+<p>
+:param url<sub>pattern</sub>: The URL pattern that will be compared against
+                    incoming requests.
+</p>
+
+<p>
+This decorator can be used as an alias to the ``route`` decorator with
+``methods=[&rsquo;DELETE&rsquo;]``.
+</p>
+
+<p>
+Example::
+</p>
+
+<p>
+@app.delete(&rsquo;/users/&lt;int:id&gt;&rsquo;)
+</p>
+</div>
+</li>
+
+<li><a id="org83bd635"></a>delete<sub>user</sub>(request, id):<br />
+<div class="outline-text-5" id="text-9-4-6-39">
+<p>
+return self.route(url<sub>pattern</sub>, methods=[&rsquo;DELETE&rsquo;])
+</p>
+</div>
+</li>
+
+
+<li><a id="org7d5cb16"></a>before<sub>request</sub>(self, f):<br />
+<div class="outline-text-5" id="text-9-4-6-40">
+<p>
+Decorator to register a function to run before each request is
+        handled. The decorated function must take a single argument, the
+        request object.
+</p>
+
+<p>
+Example::
+</p>
+
+<p>
+@app.before<sub>request</sub>
+</p>
+</div>
+</li>
+
+<li><a id="orgd3ce39f"></a>func(request):<br />
+<div class="outline-text-5" id="text-9-4-6-41">
+<p>
+self.before<sub>request</sub><sub>handlers.append</sub>(f)
+return f
+</p>
+</div>
+</li>
+
+
+<li><a id="orge96d6cf"></a>after<sub>request</sub>(self, f):<br />
+<div class="outline-text-5" id="text-9-4-6-42">
+<p>
+Decorator to register a function to run after each request is
+        handled. The decorated function must take two arguments, the request
+        and response objects. The return value of the function must be an
+        updated response object.
+</p>
+
+<p>
+Example::
+</p>
+
+<p>
+@app.before<sub>request</sub>
+</p>
+</div>
+</li>
+
+<li><a id="orgc02023d"></a>func(request, response):<br />
+<div class="outline-text-5" id="text-9-4-6-43">
+<p>
+self.after<sub>request</sub><sub>handlers.append</sub>(f)
+return f
+</p>
+</div>
+</li>
+
+
+<li><a id="org1645359"></a>errorhandler(self, status<sub>code</sub><sub>or</sub><sub>exception</sub><sub>class</sub>):<br />
+<div class="outline-text-5" id="text-9-4-6-44">
+<p>
+Decorator to register a function as an error handler. Error handler
+        functions for numeric HTTP status codes must accept a single argument,
+        the request object. Error handler functions for Python exceptions
+        must accept two arguments, the request object and the exception
+        object.
+</p>
+
+<p>
+:param status<sub>code</sub><sub>or</sub><sub>exception</sub><sub>class</sub>: The numeric HTTP status code or
+                                       Python exception class to
+                                       handle.
+</p>
+
+<p>
+Examples::
+</p>
+
+<p>
+@app.errorhandler(404)
+</p>
+</div>
+</li>
+
+<li><a id="org5911e11"></a>not<sub>found</sub>(request):<br />
+<div class="outline-text-5" id="text-9-4-6-45">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="orgf940dde"></a>runtime<sub>error</sub>(request, exception):<br /></li>
+
+
+<li><a id="orgb9aabdc"></a>run(self, host=&rsquo;0.0.0.0&rsquo;, port=5000, debug=False):<br />
+<div class="outline-text-5" id="text-9-4-6-47">
+<p>
+Start the web server. This function does not normally return, as
+        the server enters an endless listening loop. The :func:`shutdown`
+        function provides a method for terminating the server gracefully.
+</p>
+
+<p>
+:param host: The hostname or IP address of the network interface that
+             will be listening for requests. A value of ``&rsquo;0.0.0.0&rsquo;``
+             (the default) indicates that the server should listen for
+             requests on all the available interfaces, and a value of
+             ``127.0.0.1`` indicates that the server should listen
+             for requests only on the internal networking interface of
+             the host.
+:param port: The port number to listen for requests. The default is
+             port 5000.
+:param debug: If ``True``, the server logs debugging information. The
+              default is ``False``.
+</p>
+
+<p>
+Example::
+</p>
+
+<p>
+from microdot import Microdot
+</p>
+
+<p>
+app = Microdot()
+</p>
+
+<p>
+@app.route(&rsquo;/&rsquo;)
+</p>
+</div>
+</li>
+
+<li><a id="org1695b09"></a>index():<br />
+<div class="outline-text-5" id="text-9-4-6-48">
+<p>
+self.debug = debug
+self.shutdown<sub>requested</sub> = False
+</p>
+
+<p>
+self.server = socket.socket()
+ai = socket.getaddrinfo(host, port)
+addr = ai[0][-1]
+</p>
+
+<p>
+if self.debug:  # pragma: no cover
+    print(&rsquo;Starting {mode} server on {host}:{port}&#x2026;&rsquo;.format(
+        mode=concurrency<sub>mode</sub>, host=host, port=port))
+self.server.setsockopt(socket.SOL<sub>SOCKET</sub>, socket.SO<sub>REUSEADDR</sub>, 1)
+self.server.bind(addr)
+self.server.listen(5)
+</p>
+
+<p>
+while not self.shutdown<sub>requested</sub>:
+    try:
+        sock, addr = self.server.accept()
+    except OSError as exc:  # pragma: no cover
+        if exc.args[0] == errno.ECONNABORTED:
+            break
+        else:
+            raise
+    create<sub>thread</sub>(self.dispatch<sub>request</sub>, sock, addr)
+</p>
+</div>
+</li>
+
+
+<li><a id="org990dd03"></a>shutdown(self):<br />
+<div class="outline-text-5" id="text-9-4-6-49">
+<p>
+Request a server shutdown. The server will then exit its request
+        listening loop and the :func:`run` function will return. This function
+        can be safely called from a route handler, as it only schedules the
+        server to terminate as soon as the request completes.
+</p>
+
+<p>
+Example::
+</p>
+
+<p>
+@app.route(&rsquo;/shutdown&rsquo;)
+</p>
+</div>
+</li>
+
+<li><a id="orgbb8f70e"></a>shutdown(request):<br />
+<div class="outline-text-5" id="text-9-4-6-50">
+<p>
+self.shutdown<sub>requested</sub> = True
+</p>
+</div>
+</li>
+
+
+<li><a id="org639efa0"></a>find<sub>route</sub>(self, req):<br />
+<div class="outline-text-5" id="text-9-4-6-51">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org1a719bc"></a>dispatch<sub>request</sub>(self, sock, addr):<br />
+<div class="outline-text-5" id="text-9-4-6-52">
+<p>
+N/A
+</p>
+</div>
+</li>
+</ol>
+</div>
+<div id="outline-container-orgd8ee29f" class="outline-4">
+<h4 id="orgd8ee29f"><span class="section-number-4">9.4.7.</span> ./src/micro<sub>func.py</sub></h4>
+<div class="outline-text-4" id="text-9-4-7">
+</div>
+<ol class="org-ol">
+<li><a id="org76891cf"></a>#!/usr/bin/env python3<br />
+<div class="outline-text-5" id="text-9-4-7-1">
+<p>
+micro<sub>func</sub> provides some simple, pure functions, to make life easier
+</p>
+</div>
+</li>
+<li><a id="org65c8794"></a>DB(name=&ldquo;&rdquo;, surround=(&ldquo;[&rdquo;, &ldquo;] &rdquo;), debug=True, func=print):<br />
+<div class="outline-text-5" id="text-9-4-7-2">
+<p>
+returns a debugger function - which is print by default -
+    if debug is true, else it returns a void function
+</p>
+</div>
+</li>
+<li><a id="orgbcbbfad"></a>trying(exception, function, arg, on<sub>fail</sub>=lambda a: None):<br />
+<div class="outline-text-5" id="text-9-4-7-3">
+<p>
+tries to return function(arg),
+    returns on<sub>fail</sub>(arg) if exception occures
+</p>
+</div>
+</li>
+<li><a id="orgbd33287"></a>remove<sub>chars</sub>(string, chars):<br />
+<div class="outline-text-5" id="text-9-4-7-4">
+<p>
+N/A
+</p>
+</div>
+</li>
+</ol>
+</div>
+<div id="outline-container-org586ddd6" class="outline-4">
+<h4 id="org586ddd6"><span class="section-number-4">9.4.8.</span> ./src/playground.py</h4>
+<div class="outline-text-4" id="text-9-4-8">
+</div>
+<ol class="org-ol">
+<li><a id="org0bcc07a"></a>#!/usr/bin/env python3<br />
+<div class="outline-text-5" id="text-9-4-8-1">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org8d41496"></a>gpio<sub>read</sub>():<br />
+<div class="outline-text-5" id="text-9-4-8-2">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org21deb11"></a>ds18b20(pin, delay=5):<br />
+<div class="outline-text-5" id="text-9-4-8-3">
+<p>
+<a href="https://randomnerdtutorials.com/micropython-ds18b20-esp32-esp8266/">https://randomnerdtutorials.com/micropython-ds18b20-esp32-esp8266/</a>
+</p>
+</div>
+</li>
+<li><a id="org7d484e2"></a>read<sub>pin</sub>(pin):<br />
+<div class="outline-text-5" id="text-9-4-8-4">
+<p>
+N/A
+</p>
+</div>
+</li>
+</ol>
+</div>
+<div id="outline-container-org4c4098e" class="outline-4">
+<h4 id="org4c4098e"><span class="section-number-4">9.4.9.</span> ./src/pt100.py</h4>
+<div class="outline-text-4" id="text-9-4-9">
+</div>
+<ol class="org-ol">
+<li><a id="org1939d85"></a>from machine import ADC, Pin<br />
+<div class="outline-text-5" id="text-9-4-9-1">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org18634cb"></a>_<sub>init</sub>_<sub>(self, pin)</sub>:<br />
+<div class="outline-text-5" id="text-9-4-9-2">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="orgfc3537e"></a>comp(self, pt, i):<br />
+<div class="outline-text-5" id="text-9-4-9-3">
+<p>
+N/A
+</p>
+</div>
+</li>
+<li><a id="org1ed77f5"></a>read(self):<br />
+<div class="outline-text-5" id="text-9-4-9-4">
+<p>
+N/A
+</p>
+</div>
+</li>
+</ol>
+</div>
+<div id="outline-container-org5e4e867" class="outline-4">
+<h4 id="org5e4e867"><span class="section-number-4">9.4.10.</span> ./src/repl.py</h4>
+<div class="outline-text-4" id="text-9-4-10">
+</div>
+<ol class="org-ol">
+<li><a id="orgb9b5c39"></a>#!/usr/bin/env python3<br />
+<div class="outline-text-5" id="text-9-4-10-1">
+<p>
+this module is currently not working!!!
+</p>
+</div>
+</li>
+<li><a id="org88b5b9d"></a>repl(**options):<br />
+<div class="outline-text-5" id="text-9-4-10-2">
+<p>
+this is a simple repl, which is started as a coroutine,
+    means that this runs asynchronously and makes the use of
+    async/await usable
+</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org159822d" class="outline-3">
+<h3 id="org159822d"><span class="section-number-3">9.5.</span> rshell (filesystem)</h3>
+<div class="outline-text-3" id="text-9-5">
+<p>
+rshell provides a shell which mounts the
+filesystem of the microcontroller (eps32)
+under the path /pyboard
+<code>rshell -p /dev/ttyUSB0 -b 115200</code>
+</p>
+
+<p>
+rshell also supports scripts (-f option)
+edit and tangel this rshell script block,
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #ECBE7B;">cp</span> /home/nls/py/esp/src/boot.py /pyboard
+</pre>
+</div>
+<p>
+and execute it
+<a href="sudo rshell -p /dev/ttyUSB0 -b 115200 -f ~/py/esp/dist.rshell &amp;">sudo rshell -p /dev/ttyUSB0 -b 115200 -f ~/py/esp/dist.rshell &amp;</a> &lt;-
+</p>
+</div>
+</div>
+<div id="outline-container-org133aa92" class="outline-3">
+<h3 id="org133aa92"><span class="section-number-3">9.6.</span> webrepl<sub>cli</sub> (hotswap code)</h3>
+<div class="outline-text-3" id="text-9-6">
+<p>
+transfer a file with webrepl (don&rsquo;t forget to save the file beforhand)
+-&gt; <a href=" /home/$USER/py/esp/webrepl/webrepl_cli.py -p "" ~/py/esp/src/gpio.py 192.168.43.31:/gpio.py &amp;">gpio</a>
+-&gt; <a href=" /home/$USER/py/esp/webrepl/webrepl_cli.py -p "" ~/py/esp/src/main.py 192.168.43.31:/main.py &amp;">main</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdaa3d6c" class="outline-3">
+<h3 id="orgdaa3d6c"><span class="section-number-3">9.7.</span> screen (connect to console/repl)</h3>
+<div class="outline-text-3" id="text-9-7">
+<p>
+C-c to abort the programm and access
+<code>screen /dev/ttyUSB0 115200</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org991a654" class="outline-3">
+<h3 id="org991a654"><span class="section-number-3">9.8.</span> <a href="file:///home/nls/py/esp/webrepl/webrepl.html">webrepl.html</a></h3>
+</div>
+</div>
+
+<div id="outline-container-org0e50afb" class="outline-2">
+<h2 id="org0e50afb"><span class="section-number-2">10.</span> specification</h2>
+<div class="outline-text-2" id="text-10">
+</div>
+<div id="outline-container-orgb7905f3" class="outline-3">
+<h3 id="orgb7905f3"><span class="section-number-3">10.1.</span> <span class="todo TODO">TODO</span> ULP API</h3>
+</div>
+<div id="outline-container-orgf821afd" class="outline-3">
+<h3 id="orgf821afd"><span class="section-number-3">10.2.</span> I/Os</h3>
+<div class="outline-text-3" id="text-10-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">type</th>
+<th scope="col" class="org-left">location</th>
+<th scope="col" class="org-left">porpuse</th>
+<th scope="col" class="org-left">pin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">INPUTS</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">tcp/ip ui</td>
+<td class="org-left">portable</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">dht22</td>
+<td class="org-left">lung</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">dht22</td>
+<td class="org-left">bloom</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">dht22</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">humid</td>
+<td class="org-left">soil / bloom</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">co2</td>
+<td class="org-left">bloom</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">pt100</td>
+<td class="org-left">outdoor</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">OUTPUTS</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">light</td>
+<td class="org-left">bloom</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">light</td>
+<td class="org-left">veg</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">circ</td>
+<td class="org-left">bloom</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">circ</td>
+<td class="org-left">vig</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">exhaust</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">mister</td>
+<td class="org-left">lung</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">dosage-punp</td>
+<td class="org-left">feed</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org0408a32" class="outline-3">
+<h3 id="org0408a32"><span class="section-number-3">10.3.</span> Control-Loops</h3>
+<div class="outline-text-3" id="text-10-3">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">actor</td>
+<td class="org-left">sensor</td>
+</tr>
+
+<tr>
+<td class="org-left">light</td>
+<td class="org-left">time</td>
+</tr>
+
+<tr>
+<td class="org-left">mister</td>
+<td class="org-left">humid, gro</td>
+</tr>
+
+<tr>
+<td class="org-left">exhaust</td>
+<td class="org-left">temperature</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-orgf54ad43" class="outline-3">
+<h3 id="orgf54ad43"><span class="section-number-3">10.4.</span> UI features</h3>
+<div class="outline-text-3" id="text-10-4">
+<ul class="org-ul">
+<li>E-Stop (Mute)</li>
+<li>abstract mapping</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgced9fc9" class="outline-3">
+<h3 id="orgced9fc9"><span class="section-number-3">10.5.</span> API</h3>
+<div class="outline-text-3" id="text-10-5">
+<p>
+<a href="#orged04ea9">test the api with curl</a>
+<a href="cat ~/py/esp/docs.json|sed 's,\":,\n\t\t,'|sed  's,{,,'|sed 's,},,'|sed 's,\",,'|sed 's.,..' | sed 's,\\n,\n,' &amp;">read            &lt;- docs.json</a>
+<a href="#org808c7bc">generate docs   -&gt; docs.json</a>
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #51afef;">return</span> <span style="color: #98be65;">"\n"</span>.join([l <span style="color: #51afef;">for</span> l <span style="color: #51afef;">in</span> <span style="color: #c678dd;">open</span>(<span style="color: #98be65;">"./src/api.py"</span>, <span style="color: #98be65;">"r"</span>).readlines() <span style="color: #51afef;">if</span> l[<span style="color: #da8548; font-weight: bold;">0</span>] == <span style="color: #98be65;">"@"</span>])
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdaefdef" class="outline-3">
+<h3 id="orgdaefdef"><span class="section-number-3">10.6.</span> sensors</h3>
+<div class="outline-text-3" id="text-10-6">
+</div>
+<div id="outline-container-org4a9ae7d" class="outline-4">
+<h4 id="org4a9ae7d"><span class="section-number-4">10.6.1.</span> pt100</h4>
+<div class="outline-text-4" id="text-10-6-1">
+<p>
+desired resistor for pt100: ~2.57kOhm
+</p>
+</div>
+</div>
+<div id="outline-container-orgca1390c" class="outline-4">
+<h4 id="orgca1390c"><span class="section-number-4">10.6.2.</span> OEM DS18B20</h4>
+<div class="outline-text-4" id="text-10-6-2">
+<p>
+<a href="https://randomnerdtutorials.com/micropython-ds18b20-esp32-esp8266/">tutorial for esp32</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgbc569bd" class="outline-2">
+<h2 id="orgbc569bd"><span class="section-number-2">11.</span> merge org files</h2>
+<div class="outline-text-2" id="text-11">
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #dcaeea;">FILE</span>=~/base.org
+<span style="color: #ECBE7B;">echo</span> <span style="color: #98be65;">"* -&gt; "</span>$<span style="color: #dcaeea;">FILE</span>
+<span style="color: #ECBE7B;">cat</span> $<span style="color: #dcaeea;">FILE</span> | sed <span style="color: #98be65;">'s,[*] ,** ,'</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: John Doe</p>
+<p class="date">Created: 2022-05-28 Sat 17:21</p>
+</div>
+</body>
+</html>

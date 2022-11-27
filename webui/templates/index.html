@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>WebEsp</title>
+
+    <!-- jQuery -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.css">  </head>
+    <link rel="stylesheet" href="static/styles.css">  </head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body>
+    <!-- Top Navigation Menu -->
+    <div class="topnav">
+      <a href="#home" class="active">Logo</a>
+      <div id="myLinks">
+        <a href="#news">News</a>
+        <a href="#contact">Contact</a>
+        <a href="#about">About</a>
+      </div>
+      <a href="javascript:void(0);" class="icon" onclick="toggleHeader()">
+        <i class="fa fa-bars"></i>
+      </a>
+    </div>
+
+    <div id="screen">
+      <h1>WebEsp</h1>
+      <ul>
+        <li><a href="#gpio">gpio ctrl</a></li>
+        <li><a href="#top">stats</a></li>
+        <li><a href="#io-form">charts</a></li>
+        <li><a href="#chart">server info</a></li>
+      </ul>
+      <div id="gpio" style="padding-left:16px">
+        <h3>pgio</h3>
+        <button id="update-button" onclick="initGPIOs()">reinitialize GPIOs</button>
+        <div id="gpio-container" style="align-items: center">
+        </div>
+      </div>
+
+      <div id="top">
+        <h3>top</h3>
+          <fieldset class="form-group">
+            <legend class="border-bottom mb-4">[Name]</legend>
+        is a simple webapi which exposes features of the esp.
+        There is also a simple INterface which is limited to esps io functionalty
+          </fieldset>
+      </div>
+
+      <div id="io-form" class="border-bottom mb-4">
+        <h3>io-form</h3>
+        <form method="POST">
+          <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Dashboard</legend>
+            <div class="form-group">
+              <input class="btn bn-outline-info" type="submit" value="Toggle" name="toggle_btn"/>
+              </br>
+              <input class="form-control form-control-lg" type="text" value="sTR" name="string_field"/>
+              <input class="btn bn-outline-info" type="submit" value="Val2" name="action2" />
+            </div>
+          </fieldset>
+        </form>
+      </div>
+
+
+      <div id="chart">
+        <h3>chart</h3>
+        <canvas id="myChart"></canvas>
+      </div>
+
+    <!-- end screen -->
+    </div>
+
+    <script type="module" src="static/index.js"></script>
+
+    <!-- chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.js" integrity="sha512-5m2r+g00HDHnhXQDbRLAfZBwPpPCaK+wPLV6lm8VQ+09ilGdHfXV7IVyKPkLOTfi4vTTUVJnz7ELs7cA87/GMA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    const labels = ['January', 'February', 'March', 'April', 'May', 'June'];
+    const data = {
+      labels: labels,
+      datasets: [{
+        label: 'My First dataset',
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgb(255, 99, 132)',
+        data: [0, 10, 5, 2, 20, 30, 45],
+      }]
+    };
+    const config = {
+      type: 'line',
+      data: data,
+      options: {}
+    };
+    const myChart = new Chart(
+      document.getElementById('myChart'),
+      config
+    );
+  </script>
+  </body>
+</html>

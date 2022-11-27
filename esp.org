@@ -1,0 +1,656 @@
+#+title: esp
+#+author: nls
+* [NAME]
+is a web based dashboard running on a esp32,
+with it, you can control all I/O peripherals plus read some
+metadata from the esp
+
+* todos
+** TODO separate project agnositc stuff
+** TODO make a block  diagram of the project
+** TODO fix user wheel group problem
+** try to let gopro (cam) interface with esp
+* steps
+ - implement simple html serving
+ - callback server
+ - data base
+   to store some request data,
+   make backend logging possible
+ - /api for
+   - - sys info stats
+     - timer
+     - logging (db)
+* /pyboard/src io
+#+begin_src python :results raw :tangle ./tools/emacs.py
+from os import popen
+from sys import path; path.insert(1, "/home/nls/py/org-tools");
+from emacs_org import org_table, file_link, shell_link, sum_formula
+"""this script outputs an emacs-org table (simple ascii table with '-' and '|'),
+    which is programmatically aggregated.
+    Since this is meant to be used in an org-file,
+    there is a return statement in the global scope"""
+
+src = "./src/"              # src directory from where files are grabbed
+url = "192.168.43.31:/"     # ws domain where files are transferred [col 'esp']
+files = popen(f"ls {src}").read().split("\n")[:-1]
+
+webrepl_cli_bin = "/home/$USER/py/esp/webrepl/webrepl_cli.py" # [col 'esp']
+# because it sucks to always read, especially with the last '\n'
+pop = lambda c: popen(c).read()[:-1].split()
+
+
+loc = lambda f: " / ".join([
+    pop(f"cat {f} | sed '/^\s*#/d;/^\s*$/d' | wc -l")[0],
+    pop(f"cat {f} | wc -w")[0]]).replace(", ", "")
+
+return org_table(rows=(
+    dict(head= "files",
+         body= lambda f: file_link(src + f, f),
+         tail= f"[[file:{src}][{src}]]"),
+    dict(head= "esp",
+         body= lambda f: shell_link(f"{webrepl_cli_bin} {src}{f} {url}{f}", "->"),
+         tail= "[[shell:sudo rshell -p /dev/ttyUSB0 -b 115200 &][$]]"),
+    dict(head= "loc / wc",
+         body= lambda f: loc(src + f),
+         tail= loc(f"{src}*")),
+    dict(head= "du",
+         body= lambda f: pop(f"du -h {src}{f}")[0],
+         tail= sum_formula(2,-1))),
+  body_itter=files)
+#+end_src
+#+RESULTS:
+| files               | esp | loc / wc    | du              |
+|---------------------+-----+-------------+-----------------|
+| [[file:./src/api.py][api.py]]              | [[shell:/home/$USER/py/esp/webrepl/webrepl_cli.py ./src/api.py 192.168.43.31:/api.py &][->]]  | 99 / 266    | 4.0K            |
+| [[file:./src/boot.py][boot.py]]             | [[shell:/home/$USER/py/esp/webrepl/webrepl_cli.py ./src/boot.py 192.168.43.31:/boot.py &][->]]  | 14 / 39     | 4.0K            |
+| [[file:./src/gpio.py][gpio.py]]             | [[shell:/home/$USER/py/esp/webrepl/webrepl_cli.py ./src/gpio.py 192.168.43.31:/gpio.py &][->]]  | 98 / 500    | 4.0K            |
+| [[file:./src/main.py][main.py]]             | [[shell:/home/$USER/py/esp/webrepl/webrepl_cli.py ./src/main.py 192.168.43.31:/main.py &][->]]  | 5 / 17      | 4.0K            |
+| [[file:./src/microdot_asyncio.py][microdot_asyncio.py]] | [[shell:/home/$USER/py/esp/webrepl/webrepl_cli.py ./src/microdot_asyncio.py 192.168.43.31:/microdot_asyncio.py &][->]]  | 265 / 1108  | 12K             |
+| [[file:./src/microdot.py][microdot.py]]         | [[shell:/home/$USER/py/esp/webrepl/webrepl_cli.py ./src/microdot.py 192.168.43.31:/microdot.py &][->]]  | 728 / 3134  | 32K             |
+| [[file:./src/micro_func.py][micro_func.py]]       | [[shell:/home/$USER/py/esp/webrepl/webrepl_cli.py ./src/micro_func.py 192.168.43.31:/micro_func.py &][->]]  | 24 / 149    | 4.0K            |
+| [[file:./src/playground.py][playground.py]]       | [[shell:/home/$USER/py/esp/webrepl/webrepl_cli.py ./src/playground.py 192.168.43.31:/playground.py &][->]]  | 31 / 78     | 4.0K            |
+| [[file:./src/pt100.py][pt100.py]]            | [[shell:/home/$USER/py/esp/webrepl/webrepl_cli.py ./src/pt100.py 192.168.43.31:/pt100.py &][->]]  | 73 / 590    | 8.0K            |
+| [[file:./src/repl.py][repl.py]]             | [[shell:/home/$USER/py/esp/webrepl/webrepl_cli.py ./src/repl.py 192.168.43.31:/repl.py &][->]]  | 15 / 72     | 4.0K            |
+| [[file:./src/urequests.py][urequests.py]]        | [[shell:/home/$USER/py/esp/webrepl/webrepl_cli.py ./src/urequests.py 192.168.43.31:/urequests.py &][->]]  | 179 / 680   | 8.0K            |
+| [[file:./src/][./src/]]              | [[shell:sudo rshell -p /dev/ttyUSB0 -b 115200 &][$]]   | 1531 / 6633 | :=vsum(@2..@-1) |
+
+#+begin_src python :tangle ~/sys_cfg/snippets/tmp
+import uasyncio; from api import coro, run_coro
+#+end_src
+
+* hardware
+** esp32
+*** TODO find out what the heck open drain is
+https://www.elprocus.com/what-is-an-open-drain-configuration-its-working/
+*** pinout
+[[./assets/pinout-0.png][left-side]]
+[[./assets/pinout-1.png][right-side]]
+[[./assets/pinout-disc.png][discription]]
+**** legacy pinouts
+[[./assets/esp32-pinout.png][pinout]]
+*** block-diagram
+[[./assets/esp32-block-diagram.png][block-diagram]]
+*** hacks
+[[https://microcontrollerslab.com/esp32-esp8266-adc-micropython-measure-analog-readings/][make adc resolve 12bit]]
+~adc.atten(ADC.ATTN_11DB)       #3.3V full range of voltage~
+* API references
+** [[https://docs.micropython.org/en/latest/library/#][MicroPython libraries]]
+*** Index
+- [[https://docs.micropython.org/en/latest/library/#python-standard-libraries-and-micro-libraries][Python standard libraries and micro-libraries]]
+  - [[https://docs.micropython.org/en/latest/library/array.html][=array=  – arrays of numeric data]]
+  - [[https://docs.micropython.org/en/latest/library/binascii.html][=binascii=  – binary/ASCII conversions]]
+  - [[https://docs.micropython.org/en/latest/library/builtins.html][=builtins=  – builtin functions and exceptions]]
+  - [[https://docs.micropython.org/en/latest/library/cmath.html][=cmath=  – mathematical functions for complex numbers]]
+  - [[https://docs.micropython.org/en/latest/library/collections.html][=collections=  – collection and container types]]
+  - [[https://docs.micropython.org/en/latest/library/errno.html][=errno=  – system error codes]]
+  - [[https://docs.micropython.org/en/latest/library/gc.html][=gc=  – control the garbage collector]]
+  - [[https://docs.micropython.org/en/latest/library/hashlib.html][=hashlib=  – hashing algorithms]]
+  - [[https://docs.micropython.org/en/latest/library/heapq.html][=heapq=  – heap queue algorithm]]
+  - [[https://docs.micropython.org/en/latest/library/io.html][=io=  – input/output streams]]
+  - [[https://docs.micropython.org/en/latest/library/json.html][=json=  – JSON encoding and decoding]]
+  - [[https://docs.micropython.org/en/latest/library/math.html][=math=  – mathematical functions]]
+  - [[https://docs.micropython.org/en/latest/library/os.html][=os=  – basic “operating system” services]]
+  - [[https://docs.micropython.org/en/latest/library/random.html][=random=  – generate random numbers]]
+  - [[https://docs.micropython.org/en/latest/library/re.html][=re=  – simple regular expressions]]
+  - [[https://docs.micropython.org/en/latest/library/select.html][=select=  – wait for events on a set of streams]]
+  - [[https://docs.micropython.org/en/latest/library/socket.html][=socket=  – socket module]]
+  - [[https://docs.micropython.org/en/latest/library/ssl.html][=ssl=  – SSL/TLS module]]
+  - [[https://docs.micropython.org/en/latest/library/struct.html][=struct=  – pack and unpack primitive data types]]
+  - [[https://docs.micropython.org/en/latest/library/sys.html][=sys=  – system specific functions]]
+  - [[https://docs.micropython.org/en/latest/library/time.html][=time=  – time related functions]]
+  - [[https://docs.micropython.org/en/latest/library/uasyncio.html][=uasyncio=  — asynchronous I/O scheduler]]
+  - [[https://docs.micropython.org/en/latest/library/zlib.html][=zlib=  – zlib decompression]]
+  - [[https://docs.micropython.org/en/latest/library/_thread.html][=_thread=  – multithreading support]]
+- [[https://docs.micropython.org/en/latest/library/#micropython-specific-libraries][MicroPython-specific libraries]]
+  - [[https://docs.micropython.org/en/latest/library/bluetooth.html][=bluetooth=  — low-level Bluetooth]]
+  - [[https://docs.micropython.org/en/latest/library/btree.html][=btree=  – simple BTree database]]
+  - [[https://docs.micropython.org/en/latest/library/cryptolib.html][=cryptolib=  – cryptographic ciphers]]
+  - [[https://docs.micropython.org/en/latest/library/framebuf.html][=framebuf=  — frame buffer manipulation]]
+  - [[https://docs.micropython.org/en/latest/library/machine.html][=machine=  — functions related to the hardware]]
+  - [[https://docs.micropython.org/en/latest/library/micropython.html][=micropython=  – access and control MicroPython internals]]
+  - [[https://docs.micropython.org/en/latest/library/neopixel.html][=neopixel=  — control of WS2812 / NeoPixel LEDs]]
+  - [[https://docs.micropython.org/en/latest/library/network.html][=network=  — network configuration]]
+  - [[https://docs.micropython.org/en/latest/library/uctypes.html][=uctypes=  – access binary data in a structured way]]
+  - [[https://docs.micropython.org/en/latest/library/wm8960.html][=WM8960=  – Driver for the WM8960 codec]]
+- - [[https://docs.micropython.org/en/latest/library/#port-specific-libraries][Port-specific libraries]]
+  - [[https://docs.micropython.org/en/latest/library/#libraries-specific-to-the-pyboard][Libraries specific to the pyboard]]
+    - [[https://docs.micropython.org/en/latest/library/pyb.html][=pyb=  — functions related to the board]]
+    - [[https://docs.micropython.org/en/latest/library/stm.html][=stm=  — functionality specific to STM32 MCUs]]
+    - [[https://docs.micropython.org/en/latest/library/lcd160cr.html][=lcd160cr=  — control of LCD160CR display]]
+  - [[https://docs.micropython.org/en/latest/library/#libraries-specific-to-the-wipy][Libraries specific to the WiPy]]
+    - [[https://docs.micropython.org/en/latest/library/wipy.html][=wipy=  – WiPy specific features]]
+    - [[https://docs.micropython.org/en/latest/library/machine.ADCWiPy.html][class ADCWiPy – analog to digital conversion]]
+    - [[https://docs.micropython.org/en/latest/library/machine.ADCWiPy.html#class-adcchannel-read-analog-values-from-internal-or-external-sources][class ADCChannel — read analog values from internal or external sources]]
+    - [[https://docs.micropython.org/en/latest/library/machine.TimerWiPy.html][class TimerWiPy – control hardware timers]]
+    - [[https://docs.micropython.org/en/latest/library/machine.TimerWiPy.html#class-timerchannel-setup-a-channel-for-a-timer][class TimerChannel — setup a channel for a timer]]
+  - [[https://docs.micropython.org/en/latest/library/#libraries-specific-to-the-esp8266-and-esp32][Libraries specific to the ESP8266 and ESP32]]
+    - [[https://docs.micropython.org/en/latest/library/esp.html][=esp=  — functions related to the ESP8266 and ESP32]]
+    - [[https://docs.micropython.org/en/latest/library/esp32.html][=esp32=  — functionality specific to the ESP32]]
+  - [[https://docs.micropython.org/en/latest/library/#libraries-specific-to-the-rp2040][Libraries specific to the RP2040]]
+    - [[https://docs.micropython.org/en/latest/library/rp2.html][=rp2=  — functionality specific to the RP2040]]
+  - [[https://docs.micropython.org/en/latest/library/#libraries-specific-to-zephyr][Libraries specific to Zephyr]]
+    - [[https://docs.micropython.org/en/latest/library/zephyr.html][=zephyr=  — functionality specific to the Zephyr port]]
+- [[https://docs.micropython.org/en/latest/library/#extending-built-in-libraries-from-python][Extending built-in libraries from Python]]
+- [[https://docs.micropython.org/en/latest/reference/index.html][MicroPython language and implementation]]
+- [[https://docs.micropython.org/en/latest/genrst/index.html][MicroPython differences from CPython]]
+- [[https://docs.micropython.org/en/latest/develop/index.html][MicroPython Internals]]
+- [[https://docs.micropython.org/en/latest/license.html][MicroPython license information]]
+- [[https://docs.micropython.org/en/latest/pyboard/quickref.html][Quick reference for the pyboard]]
+- [[https://docs.micropython.org/en/latest/esp8266/quickref.html][Quick reference for the ESP8266]]
+- [[https://docs.micropython.org/en/latest/esp32/quickref.html][Quick reference for the ESP32]]
+- [[https://docs.micropython.org/en/latest/rp2/quickref.html][Quick reference for the RP2]]
+- [[https://docs.micropython.org/en/latest/mimxrt/quickref.html][Quick reference for the i.MXRT family]]
+- [[https://docs.micropython.org/en/latest/wipy/quickref.html][Quick reference for the WiPy]]
+- [[https://docs.micropython.org/en/latest/unix/quickref.html][Quick reference for the UNIX and Windows ports]]
+- [[https://docs.micropython.org/en/latest/zephyr/quickref.html][Quick reference for the Zephyr port]]
+- [[https://docs.micropython.org/en/latest/renesas-ra/quickref.html][Quick reference for the Renesas RA]]
+*** content
+[[https://docs.micropython.org/en/latest/index.html][MicroPython]]
+
+- »
+- MicroPython libraries
+- [[https://docs.micropython.org/en/latest/_sources/library/index.rst.txt][View page source]]
+
+-----
+
+
+Warning
+
+Important summary of this section
+
+- MicroPython provides built-in modules that mirror the functionality of the Python standard library (e.g. [[https://docs.micropython.org/en/latest/library/os.html#module-os][=os=]], [[https://docs.micropython.org/en/latest/library/time.html#module-time][=time=]]), as well as MicroPython-specific modules (e.g. [[https://docs.micropython.org/en/latest/library/bluetooth.html#module-bluetooth][=bluetooth=]], [[https://docs.micropython.org/en/latest/library/machine.html#module-machine][=machine=]]).
+
+- Most standard library modules implement a subset of the functionality of the equivalent Python module, and in a few cases provide some MicroPython-specific extensions (e.g. [[https://docs.micropython.org/en/latest/library/array.html#module-array][=array=]], [[https://docs.micropython.org/en/latest/library/os.html#module-os][=os=]])
+
+- Due to resource constraints or other limitations, some ports or firmware versions may not include all the functionality documented here.
+
+- To allow for extensibility, the built-in modules can be extended from Python code loaded onto the device.
+
+
+This chapter describes modules (function and class libraries) which are built into MicroPython. This documentation in general aspires to describe all modules and functions/classes which are implemented in the MicroPython project. However, MicroPython is highly configurable, and each port to a particular board/embedded system may include only a subset of the available MicroPython libraries.
+
+With that in mind, please be warned that some functions/classes in a module (or even the entire module) described in this documentation *may be unavailable* in a particular build of MicroPython on a particular system. The best place to find general information of the availability/non-availability of a particular feature is the “General Information” section which contains information pertaining to a specific [[https://docs.micropython.org/en/latest/reference/glossary.html#term-MicroPython-port][MicroPython port]].
+
+On some ports you are able to discover the available, built-in libraries that can be imported by entering the following at the [[https://docs.micropython.org/en/latest/reference/glossary.html#term-REPL][REPL]]:
+
+#+begin_src c
+help('modules')
+
+#+end_src
+
+Beyond the built-in libraries described in this documentation, many more modules from the Python standard library, as well as further MicroPython extensions to it, can be found in [[https://docs.micropython.org/en/latest/reference/glossary.html#term-micropython-lib][micropython-lib]].
+
+*** Python standard libraries and micro-libraries[[https://docs.micropython.org/en/latest/library/#python-standard-libraries-and-micro-libraries][¶]]
+
+The following standard Python libraries have been “micro-ified” to fit in with the philosophy of MicroPython. They provide the core functionality of that module and are intended to be a drop-in replacement for the standard Python library.
+
+- [[https://docs.micropython.org/en/latest/library/array.html][=array=  – arrays of numeric data]]
+- [[https://docs.micropython.org/en/latest/library/binascii.html][=binascii=  – binary/ASCII conversions]]
+- [[https://docs.micropython.org/en/latest/library/builtins.html][=builtins=  – builtin functions and exceptions]]
+- [[https://docs.micropython.org/en/latest/library/cmath.html][=cmath=  – mathematical functions for complex numbers]]
+- [[https://docs.micropython.org/en/latest/library/collections.html][=collections=  – collection and container types]]
+- [[https://docs.micropython.org/en/latest/library/errno.html][=errno=  – system error codes]]
+- [[https://docs.micropython.org/en/latest/library/gc.html][=gc=  – control the garbage collector]]
+- [[https://docs.micropython.org/en/latest/library/hashlib.html][=hashlib=  – hashing algorithms]]
+- [[https://docs.micropython.org/en/latest/library/heapq.html][=heapq=  – heap queue algorithm]]
+- [[https://docs.micropython.org/en/latest/library/io.html][=io=  – input/output streams]]
+- [[https://docs.micropython.org/en/latest/library/json.html][=json=  – JSON encoding and decoding]]
+- [[https://docs.micropython.org/en/latest/library/math.html][=math=  – mathematical functions]]
+- [[https://docs.micropython.org/en/latest/library/os.html][=os=  – basic “operating system” services]]
+- [[https://docs.micropython.org/en/latest/library/random.html][=random=  – generate random numbers]]
+- [[https://docs.micropython.org/en/latest/library/re.html][=re=  – simple regular expressions]]
+- [[https://docs.micropython.org/en/latest/library/select.html][=select=  – wait for events on a set of streams]]
+- [[https://docs.micropython.org/en/latest/library/socket.html][=socket=  – socket module]]
+- [[https://docs.micropython.org/en/latest/library/ssl.html][=ssl=  – SSL/TLS module]]
+- [[https://docs.micropython.org/en/latest/library/struct.html][=struct=  – pack and unpack primitive data types]]
+- [[https://docs.micropython.org/en/latest/library/sys.html][=sys=  – system specific functions]]
+- [[https://docs.micropython.org/en/latest/library/time.html][=time=  – time related functions]]
+- [[https://docs.micropython.org/en/latest/library/uasyncio.html][=uasyncio=  — asynchronous I/O scheduler]]
+- [[https://docs.micropython.org/en/latest/library/zlib.html][=zlib=  – zlib decompression]]
+- [[https://docs.micropython.org/en/latest/library/_thread.html][=_thread=  – multithreading support]]
+
+*** MicroPython-specific libraries[[https://docs.micropython.org/en/latest/library/#micropython-specific-libraries][¶]]
+
+Functionality specific to the MicroPython implementation is available in the following libraries.
+
+- [[https://docs.micropython.org/en/latest/library/bluetooth.html][=bluetooth=  — low-level Bluetooth]]
+- [[https://docs.micropython.org/en/latest/library/btree.html][=btree=  – simple BTree database]]
+- [[https://docs.micropython.org/en/latest/library/cryptolib.html][=cryptolib=  – cryptographic ciphers]]
+- [[https://docs.micropython.org/en/latest/library/framebuf.html][=framebuf=  — frame buffer manipulation]]
+- [[https://docs.micropython.org/en/latest/library/machine.html][=machine=  — functions related to the hardware]]
+- [[https://docs.micropython.org/en/latest/library/micropython.html][=micropython=  – access and control MicroPython internals]]
+- [[https://docs.micropython.org/en/latest/library/neopixel.html][=neopixel=  — control of WS2812 / NeoPixel LEDs]]
+- [[https://docs.micropython.org/en/latest/library/network.html][=network=  — network configuration]]
+- [[https://docs.micropython.org/en/latest/library/uctypes.html][=uctypes=  – access binary data in a structured way]]
+
+The following libraries provide drivers for hardware components.
+
+- [[https://docs.micropython.org/en/latest/library/wm8960.html][=WM8960=  – Driver for the WM8960 codec]]
+
+*** Libraries specific to the ESP8266 and ESP32[[https://docs.micropython.org/en/latest/library/#libraries-specific-to-the-esp8266-and-esp32][¶]]
+
+The following libraries are specific to the ESP8266 and ESP32.
+
+- [[https://docs.micropython.org/en/latest/library/esp.html][=esp=  — functions related to the ESP8266 and ESP32]]
+  - [[https://docs.micropython.org/en/latest/library/esp.html#functions][Functions]]
+- [[https://docs.micropython.org/en/latest/library/esp32.html][=esp32=  — functionality specific to the ESP32]]
+  - [[https://docs.micropython.org/en/latest/library/esp32.html#functions][Functions]]
+  - [[https://docs.micropython.org/en/latest/library/esp32.html#flash-partitions][Flash partitions]]
+  - [[https://docs.micropython.org/en/latest/library/esp32.html#rmt][RMT]]
+  - [[https://docs.micropython.org/en/latest/library/esp32.html#ultra-low-power-co-processor][Ultra-Low-Power co-processor]]
+  - [[https://docs.micropython.org/en/latest/library/esp32.html#id1][Constants]]
+  - [[https://docs.micropython.org/en/latest/library/esp32.html#non-volatile-storage][Non-Volatile Storage]]
+
+** micropython [[https://docs.micropython.org/en/latest/esp32/quickref.html][quickref]] /[quickre
+| [[https://docs.micropython.org/en/latest/library/][lib]]         | MicroPythonlibraries                   |
+|-------------+----------------------------------------|
+| [[https://docs.micropython.org/en/latest/library/esp32.html][esp]]         | functionalityspecifictotheesp2         |
+| [[https://docs.micropython.org/en/latest/library/array.html][array]]       | arraysofnumericdata                    |
+| [[https://docs.micropython.org/en/latest/library/binascii.html][binascii]]    | binary/ASCIIconversions                |
+| [[https://docs.micropython.org/en/latest/library/builtins.html][builtins]]    | builtinfunctionsandexceptions          |
+| [[https://docs.micropython.org/en/latest/library/cmath.html][cmath]]       | mathematicalfunctionsforcomplexnumbers |
+| [[https://docs.micropython.org/en/latest/library/collections.html][collections]] | collectionandcontainertypes            |
+| [[https://docs.micropython.org/en/latest/library/errno.html][errno]]       | systemerrorcodes                       |
+| [[https://docs.micropython.org/en/latest/library/gc.html][gc]]          | controlthegarbagecollector             |
+| [[https://docs.micropython.org/en/latest/library/hashlib.html][hashlib]]     | hashingalgorithms                      |
+| [[https://docs.micropython.org/en/latest/library/heapq.html][heapq]]       | heapqueuealgorithm                     |
+| [[https://docs.micropython.org/en/latest/library/io.html][io]]          | input/outputstreams                    |
+| [[https://docs.micropython.org/en/latest/library/json.html][json]]        | JSONencodinganddecoding                |
+| [[https://docs.micropython.org/en/latest/library/math.html][math]]        | mathematicalfunctions                  |
+| [[https://docs.micropython.org/en/latest/library/os.html][os]]          | basic“operatingsystem”services         |
+| [[https://docs.micropython.org/en/latest/library/random.html][random]]      | generaterandomnumbers                  |
+| [[https://docs.micropython.org/en/latest/library/re.html][re]]          | simpleregularexpressions               |
+| [[https://docs.micropython.org/en/latest/library/select.html][select]]      | waitforeventsonasetofstreams           |
+| [[https://docs.micropython.org/en/latest/library/socket.html][socket]]      | socketmodule                           |
+| [[https://docs.micropython.org/en/latest/library/ssl.html][ssl]]         | SSL/TLSmodule                          |
+| [[https://docs.micropython.org/en/latest/library/struct.html][struct]]      | packandunpackprimitivedatatypes        |
+| [[https://docs.micropython.org/en/latest/library/sys.html][sys]]         | systemspecificfunctions                |
+| [[https://docs.micropython.org/en/latest/library/time.html][time]]        | timerelatedfunctions                   |
+| [[https://docs.micropython.org/en/latest/library/uasyncio.html][uasyncio]]    | asynchronousI/Oscheduler               |
+| [[https://docs.micropython.org/en/latest/library/zlib.html][zlib]]        | zlibdecompression                      |
+| [[https://docs.micropython.org/en/latest/library/zlib.html][zlib]]        | zlibdecompression                      |
+| [[https://docs.micropython.org/en/latest/library/_thread.html][_thread]]     | multithreadingsupport                  |
+** [[https://microdot.readthedocs.io/en/latest/api.html][Microdot]]
+[[https://bhave.sh/micropython-microdot/][Tut of Microdot]]
+* api_test.py
+#+begin_src python :tangle ./tools/api_test.py :results raw
+#!/usr/bin/env python3
+import requests
+from time import perf_counter
+from datetime import datetime as dt
+from docer import dict_to_org, pop_keys
+
+ROOT_URL = "http://192.168.43.31:5000/"
+
+request_generator = lambda *calls: (lambda: requests.get(ROOT_URL + call[0], params=call[1])
+                         for call in calls)
+
+tee = lambda f, a: (a, f(a))[0]
+
+def chain(*iterables):
+    for it in iterables:
+        for element in it:
+            yield element
+
+def benchmark(gen, io_func=print, count=1):
+    """ a function simple io function to benchmark an api
+    gen ->     Generator yealding void functions, which perform the requests
+    io_func -> A callback function which receives the response obj (of each g in gen)
+               since the function is passed in a tee, it is not relevant what the func returns.
+               By default i/o is omitted, pass print or a cutom function to enable io
+    count ->   Amount of requests per yield of gen
+    """
+    t1 = perf_counter()
+    results = list(tee(io_func, g()) for g in gen for i in range(count))
+    t1 = (perf_counter() - t1) * 1000
+    return {"resp": {r.url:r for r in results},
+            "content": {r.url:r._content for r in results},
+            "time": f"{int(t1)}ms",
+            "count": f"{count}",
+            "average_ms": f"{t1 / count:.3}",
+            "request/s": f"{1000 / (t1 / count)}"}
+
+def sum_reports(reports):
+    """ sum all reports together in a dict"""
+    result = dict()
+    for n, report in enumerate(reports):
+       result[n] = {i:r for i, r in enumerate(report)}
+    print(dict_to_org(result, indent=2))
+
+
+
+stamp = lambda: dt.now().strftime("%Y-%m-%d - %H:%M:%S")
+
+n = 0
+
+def io_function(a):
+    global n
+    n = n + 1
+    print(f"{a} #{n}  ",
+          "\n ".join((stamp(), a.url, str(a._content))))
+
+def benchmarking(url, pins, iterations):
+    return (benchmark(request_generator(req),
+                      io_function,
+                      iterations)
+            for req in ((url, {"pin":p})
+                        for p in pins))
+
+def report_to_org(*tests):
+    return sum_reports(chain(
+        benchmarking(test[0], test[1], test[2] if len(test) > 2 else 1)
+        for test in tests ))
+
+pay = {"get": "api/gpio/set",
+       "set": "api/gpio/set",
+       "read": "api/gpio/read",
+       "ds18": "api/gpio/ds18"}
+
+# report_to_org(pay["get"], list(range(1,35)))
+report_to_org(
+    (pay["set"], (2, 26)),
+    (pay["get"], (2, 26),10),
+    (pay["ds18"], (4,),2),
+    (pay["read"], (33,),2),
+    (pay["get"], (2, 26),10))
+
+#+end_src
+
+
+#+begin_src python :tangle ~/sys_cfg/snippets/atmp
+import uasyncio;
+from api import coro, run_coro;
+run_coro();
+#+end_src
+
+* curl (test API)
+** curl-gen
+#+begin_src python :results raw
+def gen(raw=True):
+    for lisp in ( ("get", 2, 33), ("set", 2, 33),
+                  ("get", (2,{"value":1}))):
+        yield f"*{lisp[0]}*"
+        for arg in lisp[1:]:
+            no_args = lambda: isinstance(arg, int)
+            pin = arg if no_args else arg[0]
+            arg = ( "" if no_args
+                    else "-G " + " ".join([f"-d \"{k}={arg[1][k]}\""
+                                          for k in arg[1]]))
+
+            yield f"[[shell:curl 192.168.43.31:5000/api/gpio/{lisp[0]}/{pin}]" \
+                + ("]" if raw else f"[/{lisp[0]}/{pin}]]")
+
+return "\n".join(list(gen())    )
+#+end_src
+
+#+RESULTS:
+*get*
+[[shell:curl 192.168.43.31:5000/api/gpio/get/2]]
+[[shell:curl 192.168.43.31:5000/api/gpio/get/33]]
+*set*
+[[shell:curl 192.168.43.31:5000/api/gpio/set/2]]
+[[shell:curl 192.168.43.31:5000/api/gpio/set/33]]
+*get*
+[[shell:curl 192.168.43.31:5000/api/gpio/get/(2, {'value': 1})]]
+
+[[API][api spec]]
+** Root / Doc [/ ]
+[[shell:curl 192.168.43.31:5000/ &][/  <-]]
+[[shell:curl 192.168.43.31:5000/api &][/api  <-]]
+[[shell:curl -G -d "pin=2" 192.168.43.31:5000/api/gpio &][/gpio <-]]
+** gpio [/api/gpio]
+*** DigitalIn [/get]
+[[shell:curl 192.168.43.31:5000/api/gpio/get/33 &][/gpio/get pin: 33]]
+[[shell:curl 192.168.43.31:5000/api/gpio/get/2 &][/gpio/get pin: 2]]
+**** error
+[[shell:curl -G -d "pin=two" 192.168.43.31:5000/api/gpio/get &][/gpio/get pin: type error str instead of int]]
+[[shell:curl 192.168.43.31:5000/api/gpio/get &][/gpio/get pin: arg not suplied]]
+*** DigitalOut [/set]
+[[shell:curl 192.168.43.31:5000/api/gpio/set/33 &]]
+[[shell:curl 192.168.43.31:5000/api/gpio/set/26 &]]
+[[shell:curl 192.168.43.31:5000/api/gpio/set/2 &][/set 2 toggel]]
+**** error
+[[shell:curl -d "value=1" 192.168.43.31:5000/api/gpio/set/two &][/gpio/set/2 2 type error str instead of int]]
+
+*** ds18b20 [/ds18]
+[[shell:curl 192.168.43.31:5000/api/gpio/ds18/4 &][/ds18 4 <-]curl -G -d "pin=4"  192.168.43.31:5000/api/gpio/ds18]]
+*** Analog [/read]
+[[shell:curl 192.168.43.31:5000/api/gpio/read/33 &][/read 33 <]][[shell:curl 192.168.43.31:5000/api/gpio/read/three &][/read 33 type error str instead of int <-]]]]
+* tools
+** callback-server (flask)
+#+begin_src python :tangle ./tools/callback.py
+from flask import Flask, jsonify
+
+HOST = "0.0.0.0"
+HOST = "192.168.43.66"
+
+tee = lambda f, a: (a, f(a))[0]
+
+app = Flask(__name__)
+
+@app.route("/<payload>")
+def callback(payload):
+    print()
+    try:
+        return tee(lambda a:print(f"\n\n{a}\n"), jsonify(eval(payload)))
+    except Exception as e:
+        return jsonify({"error":str(e),
+                        "raw":payload})
+
+app.run(host=HOST)
+#+end_src
+[[shell:curl -G 192.168.43.66:5000/12,23   &]]
+** rshell (filesystem)
+rshell provides a shell which mounts the
+filesystem of the microcontroller (eps32)
+under the path /pyboard
+~rshell -p /dev/ttyUSB0 -b 115200~
+
+rshell also supports scripts (-f option)
+edit and tangel this rshell script block,
+#+begin_src sh :tangle "~/py/esp/dist.rshell"
+cp /home/nls/py/esp/src/boot.py /pyboard
+#+end_src
+and execute it
+[[shell:sudo rshell -p /dev/ttyUSB0 -b 115200 -f ~/py/esp/dist.rshell &]] <-
+** doc extractor (docer.py)
+#+begin_src python :tangle ./tools/docer.py :results raw
+#!/usr/bin/env python
+"""this python script extracts signature and docstring, of given functions.
+Recogniseing decoratores is yet not implemented.
+The data is then outputed to a json or org file,
+later is especially usefull, if this script is
+implemented in a org file. In that case, make
+sure that the src_block has the ':results raw' option added
+"""
+
+from os import popen
+from json import dump
+from datetime import datetime as dt
+
+SRC_PATH = "./src/"
+OUT_FILE = "./docs.json"
+
+def pop_keys(keys, *dicts):
+    """removes all keys in dicts and returns a list of the resulting dicts"""
+    res_dict = []
+    for b in dicts:
+        [b.pop(k) for k in keys]
+        res_dict.append(b)
+    return res_dict
+
+def extract_docs(files):
+    """outputs a dict with given filenames as keys,
+    whose values are dicts with function signature
+    and docstring key value pairs"""
+    docs = {}
+    for file in files:
+        functions = {}
+        for f in "".join(open(file, "r").readlines()).split("def "):
+            try:
+                doc = f.split('"""')[1]
+            except IndexError:
+                doc = "N/A"
+            functions.update({f.split("\n")[0]: doc})
+        docs.update({file: functions})
+    return docs
+
+def dict_to_org(d, indent=1):
+    """
+    * TODO add support for lists!
+    * TODO add print format input ( eg fmt="{}\n{}" )
+    recursivly transforms a dict to an org-file.
+    The heading level is controled by the indent parameter
+    e.g.
+    >>> dict_to_org({"foo":"bar","bar"{"oof":"baz"}}, indent=2)"""
+    # ** foo
+    #    bar
+    # ** bar
+    # *** off
+    #     baz
+    return "\n".join([
+        "\n".join((
+            "*"*(indent) + " " + str(k),
+            dict_to_org(d[k], indent+1)
+            if isinstance(d[k], dict)
+            else " "*(indent+1) + str(d[k])))
+        for k in d])
+
+# for org src_block output
+# return "** -> docstrings (" \
+#         + dt.now().strftime("%Y-%m-%d - %H:%M:%S") \
+#         + ")\n" \
+#         + dict_to_org(extract_docs([SRC_PATH + f
+#                                     for f in popen("ls ./src").read().split("\n") if ".py" in f]),
+#                       indent=3)
+# dump(docs, open(OUT_FILE, "w"), indent=2)
+#+end_src
+** TODO document img flashin process
+*Installation instructions*
+[[https://micropython.org/download/esp32/][Program your board using the esptool.py program, found here.]]
+
+If you are putting MicroPython on your board for the first time then you should first erase the entire flash using:
+
+~esptool.py --chip esp32 --port /dev/ttyUSB0 erase_flash~
+
+From then on program the firmware starting at address 0x1000:
+
+~esptool.py --chip esp32 --port /dev/ttyUSB0 --baud 460800 write_flash -z 0x1000 esp32-20190125-v1.10.bin~
+
+** TODO cli_socket.py
+#+begin_src python :tangle ./tools/cli_socket.py
+import websockets
+#!/usr/bin/env python
+
+import asyncio
+import websockets
+
+uri = "ws://192.168.43.31:8266"
+
+async def hello():
+    msg = ""
+    async with websockets.connect(uri) as websocket:
+        await websocket.send(msg)
+        msg = input(">>>" + await websocket.recv())
+
+asyncio.run(hello())
+#+end_src
+
+#+RESULTS:
+
+** [[file:~/py/esp/webrepl/webrepl.html][webrepl.html]]
+* cli
+[[shell:ping 192.168.43.31 -c 20 &]]
+[[shell:sudo screen /dev/ttyUSB0 115200 &]]
+* specification
+** TODO ULP API
+** I/Os
+ | type        | location     | porpuse | pin |
+ |-------------+--------------+---------+-----|
+ | INPUTS      |              |         |     |
+ | tcp/ip ui   | portable     |         |     |
+ | dht22       | lung         |         |     |
+ | dht22       | bloom        |         |     |
+ | dht22       |              |         |     |
+ | humid       | soil / bloom |         |     |
+ | co2         | bloom        |         |     |
+ | pt100       | outdoor      |         |     |
+ |-------------+--------------+---------+-----|
+ | OUTPUTS     |              |         |     |
+ | light       | bloom        |         |     |
+ | light       | veg          |         |     |
+ | circ        | bloom        |         |     |
+ | circ        | vig          |         |     |
+ | exhaust     |              |         |     |
+ | mister      | lung         |         |     |
+ | dosage-punp | feed         |         |     |
+** monitoring data collection
+- measure power of the system
+- flash size of the esp
+
+** Control-Loops
+ | actor   | sensor      |
+ | light   | time        |
+ | mister  | humid, gro  |
+ | exhaust | temperature |
+
+** UI features
+ - E-Stop (Mute)
+ - abstract mapping
+** API
+[[curl (test API)][test the api with curl]]
+[[shell:cat ~/py/esp/docs.json|sed 's,\":,\n\t\t,'|sed  's,{,,'|sed 's,},,'|sed 's,\",,'|sed 's.,..' | sed 's,\\n,\n,' &][read            <- docs.json]]
+[[doc extractor (docer.py)][generate docs   -> docs.json]]
+#+begin_src python
+return "\n".join([l for l in open("./src/api.py", "r").readlines() if l[0] == "@"])
+#+end_src
+
+#+RESULTS:
+: @app.before_request
+:
+: @app.route('/')
+:
+: @app.route('/api/gpio')
+:
+: @app.route('/api/gpio/<function>')
+
+** sensors
+*** pt100
+desired resistor for pt100: ~2.57kOhm
+*** OEM DS18B20
+[[https://randomnerdtutorials.com/micropython-ds18b20-esp32-esp8266/][tutorial for esp32]]
+* merge org files
+#+begin_src bash :results raw
+FILE=~/base.org
+echo "* -> "$FILE
+cat $FILE | sed 's,[*] ,** ,'
+#+end_src
+#+RESULTS:
+
+
+
+#+begin_src elisp
+(async-shell-command "echo hallo &")
+(message " hallo")
+
+#+end_src

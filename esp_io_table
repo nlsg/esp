@@ -1,0 +1,17 @@
+type	location	porpuse	pin
+INPUTS			
+tcp/ip ui	portable		
+dht22	lung		
+dht22	bloom		
+dht22			
+humid	soil / bloom		
+co2	bloom		
+pt100	outdoor		
+OUTPUTS			
+light	bloom		
+light	veg		
+circ	bloom		
+circ	vig		
+exhaust			
+mister	lung		
+dosage-punp	feed		
